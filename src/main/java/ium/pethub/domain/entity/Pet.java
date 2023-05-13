@@ -1,5 +1,6 @@
 package ium.pethub.domain.entity;
 
+import ium.pethub.dto.pet.request.PetRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,12 +36,11 @@ public class Pet extends BaseTimeEntity{
     @Column(nullable = false)
     private String introduction;
 
-    @Column(nullable = false)
     private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",nullable = false)
-    private User owner;
+    private User user;
 
     @Builder
     public Pet(String name, String gender, String age, int weight, String breed, String introduction, String image, User owner) {
@@ -51,16 +51,20 @@ public class Pet extends BaseTimeEntity{
         this.breed = breed;
         this.introduction = introduction;
         this.image = image;
-        this.owner = owner;
+        this.user = owner;
     }
 
-//    public void update(PetRequestDto requestDto){
-//        this.name = requestDto.getPetName();
-//        this.gender = requestDto.getPetGender();
-//        this.age = requestDto.getPetAge();
-//        this.weight = requestDto.getPetWeight();
-//        this.breed = requestDto.getPetBreed();
-//        this.introduction = requestDto.getPetIntroduction();
-//        this.image = requestDto.getPetImage();
-//    }
+    public void update(PetRequestDto requestDto){
+        this.name = requestDto.getPetName();
+        this.gender = requestDto.getPetGender();
+        this.age = requestDto.getPetAge();
+        this.weight = requestDto.getPetWeight();
+        this.breed = requestDto.getPetBreed();
+        this.introduction = requestDto.getPetIntroduction();
+        this.image = requestDto.getPetImage();
+    }
+
+    public void setImage(String petImage) {
+        this.image = petImage;
+    }
 }
