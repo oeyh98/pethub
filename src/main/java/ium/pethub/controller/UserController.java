@@ -47,7 +47,7 @@ public class UserController {
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/user")
-    public ResponseEntity<Object> updateUserInfo(@RequestBody @Valid UserUpdateRequestDto requestDto) {
+    public ResponseEntity<Object> updateUserInfo(@RequestBody UserUpdateRequestDto requestDto) {
         userService.updateUser(UserContext.userData.get().getUserId(), requestDto);
         return ResponseEntity.ok().build();
     }
