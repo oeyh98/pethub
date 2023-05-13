@@ -7,7 +7,8 @@ import ium.pethub.dto.user.reponse.LoginResponseDto;
 import ium.pethub.dto.user.reponse.TokenResponseDto;
 import ium.pethub.dto.user.reponse.UserLoginResponseDto;
 import ium.pethub.dto.user.request.LoginRequestDto;
-import ium.pethub.dto.user.request.UserJoinDto;
+import ium.pethub.dto.user.request.UserJoinRequestDto;
+import ium.pethub.dto.user.request.UserPasswordRequestDto;
 import ium.pethub.service.AuthService;
 import ium.pethub.util.AuthCheck;
 import ium.pethub.util.UserContext;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.module.Configuration;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -28,55 +30,57 @@ public class AuthController {
 
     @PostMapping("/api/auth/duplicate-email")
     public ResponseEntity<Object> duplicateEmail(@RequestBody Map<String, String> email) {
-        if (userRepository.existsByEmail(email.get("email"))) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
+        String mail = email.get("email");
+        authService.duplicateEmail(mail);
+        return ResponseEntity.ok().body(ResponseDto.of("사용 가능한 이메일입니다"));
     }
 
     @PostMapping("/api/auth/duplicate-nickname")
     public ResponseEntity<Object> duplicateNickname(@RequestBody Map<String, String> nickname) {
-        if (userRepository.existsByNickname(nickname.get("nickname"))) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
+        String nick = nickname.get("nickname");
+        authService.duplicateNickname(nick);
+        return ResponseEntity.ok().body(ResponseDto.of("사용 가능한 닉네임입니다"));
     }
 
+    @PostMapping("/api/auth/duplicate-phone")
+    public ResponseEntity<Object> duplicatePhone(@RequestBody Map<String, String> phoneNumber) {
+        String phone = phoneNumber.get("phoneNumber");
+        authService.duplicatePhoneNumber(phone);
+        return ResponseEntity.ok().body(ResponseDto.of("사용 가능한 번호입니다"));
+
+    }
     @PostMapping("/api/auth/join")
-    public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) throws Exception {
-        User user = userJoinDto.toEntity();
-        if (authService.joinDuplicate(user)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } else {
-            authService.join(user);
-            return ResponseEntity.ok().build();
-        }
+    public ResponseEntity<Object> join(@RequestBody UserJoinRequestDto userJoinRequestDto) throws Exception {
+        authService.joinDuplicate(userJoinRequestDto);
+        authService.join(userJoinRequestDto);
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "회원가입에 성공하였습니다."
+        ));
     }
 
+    //TODO : login return builder??
     @PostMapping("/api/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request) throws Exception {
-        LoginResponseDto dto = authService.login(request);
+        LoginResponseDto responseDto = authService.login(request);
 
         ResponseCookie AccessToken = authService.getAccessTokenCookie(
-                dto.getTokenResponseDto().getACCESS_TOKEN());
+                responseDto.getTokenResponseDto().getACCESS_TOKEN());
 
         ResponseCookie RefreshToken = authService.getRefreshTokenCookie(
-                dto.getTokenResponseDto().getREFRESH_TOKEN());
+                responseDto.getTokenResponseDto().getREFRESH_TOKEN());
 
         return ResponseEntity.ok()
                 .header("Set-Cookie", AccessToken.toString())
                 .header("Set-Cookie", RefreshToken.toString())
-                .body(new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
+                .body(ResponseDto.of("로그인을 성공하였습니다",
+                        new UserLoginResponseDto(responseDto.getNickName(), responseDto.getUserImage())));
     }
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/auth/logout")
     public ResponseEntity<Object> logout() {
-        Long userId = UserContext.userData.get().getUserId();
-        authService.removeRefreshToken(userId);
+        authService.removeRefreshToken(UserContext.userData.get().getUserId());
         return ResponseEntity.ok()
                 .header("Set-Cookie", "ACCESS_TOKEN=; path=/; max-age=0; expires=0;")
                 .header("Set-Cookie", "REFRESH_TOKEN=; path=/updateToken; max-age=0; expires=0;")
@@ -86,7 +90,6 @@ public class AuthController {
     }
 
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/auth/check-pw")
     public ResponseEntity<?> checkPassword(@RequestBody Map<String, String> password) throws Exception {
         authService.checkPassword(UserContext.userData.get().getUserId(), password.get("password"));
@@ -96,10 +99,19 @@ public class AuthController {
     }
 
     @ValidToken
+    @PutMapping("/api/user/change-pw")
+    public ResponseEntity<?> changePassword(@RequestBody UserPasswordRequestDto requestDto) throws Exception {
+        authService.updatePassword(requestDto);
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "비밀번호 변경에 성공하였습니다."
+        ));
+    }
+
+    @ValidToken
     @GetMapping("/api/auth/update-token")
     public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
 
-        TokenResponseDto token = authService.updateAccessToken(refreshToken);
+        TokenResponseDto token = authService.updateAccessToken(UserContext.userData.get().getUserId(), refreshToken);
         ResponseCookie AccessToken = authService.getAccessTokenCookie(
                 token.getACCESS_TOKEN());
 

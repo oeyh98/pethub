@@ -33,7 +33,6 @@ public class User extends BaseTimeEntity{
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(nullable = false)
     private LocalDate birth;
 
     @Column(nullable = false)
@@ -42,10 +41,8 @@ public class User extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
-    @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
     private String userImage;
 
     @Column(length = 1000)

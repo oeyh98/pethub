@@ -1,10 +1,7 @@
 package ium.pethub.controller;
 
-import com.sun.xml.bind.v2.TODO;
-import ium.pethub.domain.repository.UserRepository;
 import ium.pethub.dto.common.ResponseDto;
 import ium.pethub.dto.user.reponse.UserInfoResponseDto;
-import ium.pethub.dto.user.request.UserPwdResetRequestDto;
 import ium.pethub.dto.user.request.UserUpdateRequestDto;
 import ium.pethub.service.UserService;
 import ium.pethub.util.AuthCheck;
@@ -18,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -38,13 +34,13 @@ public class UserController {
     }
 
 //    TODO: 펫정보, 게시물 정보 한번에 가져오도록 변경해야함
+    //TODO: 에러 내용 확인
     //유저 조회
     //본인 이외의 유저 조회시 닉네임 이용
     @ValidToken
-    @GetMapping("/api/user")
+    @GetMapping("/api/user/nickname")
     public ResponseEntity<?> getUserInfoByNickname(@RequestParam("nickname") String nickname) {
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, userService.getUserByNickname(nickname)));
-
     }
 
     //유저 정보 수정

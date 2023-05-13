@@ -6,14 +6,18 @@ import ium.pethub.domain.repository.UserRepository;
 import ium.pethub.dto.user.reponse.LoginResponseDto;
 import ium.pethub.dto.user.reponse.TokenResponseDto;
 import ium.pethub.dto.user.request.LoginRequestDto;
+import ium.pethub.dto.user.request.UserJoinRequestDto;
+import ium.pethub.dto.user.request.UserPasswordRequestDto;
+import ium.pethub.exception.AlreadyExistException;
 import ium.pethub.util.AESEncryption;
 import ium.pethub.util.JwtTokenProvider;
-import ium.pethub.util.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import javax.persistence.EntityNotFoundException;
 
 import static ium.pethub.util.AuthConstants.REFRESH_EXPIRE;
 
@@ -25,7 +29,8 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AESEncryption aesEncryption;
 
-    public void join(User user) throws Exception {
+    public void join(UserJoinRequestDto userJoinRequestDto) throws Exception {
+        User user = userJoinRequestDto.toEntity();
         String encryptPwd = aesEncryption.encrypt(user.getPassword());
         user.resetPassword(encryptPwd);
         userRepository.save(user);
@@ -39,36 +44,46 @@ public class AuthService {
 
         String accessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
+
         user.updateRefreshToken(refreshToken);
+
         TokenResponseDto token = TokenResponseDto.builder().
                 ACCESS_TOKEN(accessToken).REFRESH_TOKEN(refreshToken)
                 .build();
         return LoginResponseDto.builder()
                 .tokenResponseDto(token)
-                .userImage(user.getUserImage())
-                .build();
+                .nickName(user.getNickname())
+                .userImage(user.getUserImage()).build();
     }
 
     public void checkPassword(Long userId, String password) throws Exception {
         User user = userRepository.findById(userId).get();
         String encryptPw = aesEncryption.encrypt(password);
+
         if(!user.getPassword().equals(encryptPw)){
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalStateException("비밀번호가 틀렸습니다.");
         }
     }
 
-    public TokenResponseDto updateAccessToken(String refresh_token){
-        String updateAccessToken;
+    public void updatePassword(UserPasswordRequestDto requestDto) throws Exception {
+        User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+                () -> new EntityNotFoundException("유저가 존재하지 않습니다."));
+        String encryptedPassword = aesEncryption.encrypt(requestDto.getPassword());
+        user.resetPassword(encryptedPassword);
+    }
 
-           User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
-           String OriginalRefreshToken = user.getRefreshToken();
-           if (OriginalRefreshToken.equals(refresh_token)) {
-               updateAccessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
-           } else {
-               user.destroyRefreshToken();
-               userRepository.save(user);
-               throw new JwtException("변조된 토큰");
-           }
+
+    public TokenResponseDto updateAccessToken(Long userId, String refresh_token){
+        String updateAccessToken;
+        User user = userRepository.findById(userId).get();
+        String OriginalRefreshToken = user.getRefreshToken();
+        if (OriginalRefreshToken.equals(refresh_token)) {
+            updateAccessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
+        } else {
+            user.destroyRefreshToken();
+            userRepository.save(user);
+            throw new JwtException("변조된 토큰");
+        }
 
         return TokenResponseDto.builder()
                 .ACCESS_TOKEN(updateAccessToken)
@@ -95,9 +110,31 @@ public class AuthService {
                 .build();
     }
 
-    public boolean joinDuplicate(User user) {
-        return userRepository.existsByEmail(user.getEmail());
+    public void joinDuplicate(UserJoinRequestDto userJoinRequestDto) {
+        User user = userJoinRequestDto.toEntity();
+        duplicateEmail(user.getEmail());
+        duplicateNickname(user.getNickname());
+        duplicateEmail(user.getPhoneNumber());
     }
+
+    public void duplicateEmail(String email) {
+        if(userRepository.existsByEmail(email)){
+            throw new AlreadyExistException("이미 존재하는 이메일입니다.");
+        }
+    }
+
+    public void duplicateNickname(String nickname) {
+        if (userRepository.existsByNickname(nickname)){
+            throw new AlreadyExistException("이미 존재하는 닉네임입니다.");
+        }
+    }
+
+    public void duplicatePhoneNumber(String phoneNumber) {
+        if (userRepository.existsByPhoneNumber(phoneNumber)){
+            throw new AlreadyExistException("이미 존재하는 전화번호입니다.");
+        }
+    }
+
 
     public void removeRefreshToken(Long userId) {
         User user = userRepository.findById(userId).get();
