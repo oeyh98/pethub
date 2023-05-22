@@ -3,9 +3,9 @@ package ium.pethub.service;
 import io.jsonwebtoken.JwtException;
 import ium.pethub.domain.entity.User;
 import ium.pethub.domain.repository.UserRepository;
-import ium.pethub.dto.user.reponse.LoginResponseDto;
 import ium.pethub.dto.user.reponse.TokenResponseDto;
-import ium.pethub.dto.user.request.LoginRequestDto;
+import ium.pethub.dto.user.reponse.UserLoginResponseDto;
+import ium.pethub.dto.user.request.UserLoginRequestDto;
 import ium.pethub.dto.user.request.UserJoinRequestDto;
 import ium.pethub.dto.user.request.UserPasswordRequestDto;
 import ium.pethub.exception.AlreadyExistException;
@@ -36,7 +36,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public LoginResponseDto login(LoginRequestDto requestDto) throws Exception {
+    public UserLoginResponseDto login(UserLoginRequestDto requestDto) throws Exception {
         User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
 
@@ -50,9 +50,10 @@ public class AuthService {
         TokenResponseDto token = TokenResponseDto.builder().
                 ACCESS_TOKEN(accessToken).REFRESH_TOKEN(refreshToken)
                 .build();
-        return LoginResponseDto.builder()
+        return UserLoginResponseDto.builder()
                 .tokenResponseDto(token)
-                .nickName(user.getNickname())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
                 .userImage(user.getUserImage()).build();
     }
 

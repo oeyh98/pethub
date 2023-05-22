@@ -66,6 +66,7 @@ public class PetService {
                 .collect(Collectors.toList());
     }
 
+    //TODO: 펫 주인 확인 필요
     public void updatePet(Long petId, PetRequestDto requestDto) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 펫이 없습니다. id=" + petId));

@@ -1,11 +1,13 @@
 package ium.pethub.dto.user.reponse;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 @Getter
-@AllArgsConstructor
 public class UserLoginResponseDto {
-    private String nickName;
+    private TokenResponseDto tokenResponseDto;
+    private String email;
+    private String nickname;
     private String userImage;
 }

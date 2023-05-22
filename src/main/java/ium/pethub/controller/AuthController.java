@@ -1,12 +1,10 @@
 package ium.pethub.controller;
 
-import ium.pethub.domain.entity.User;
 import ium.pethub.domain.repository.UserRepository;
 import ium.pethub.dto.common.ResponseDto;
-import ium.pethub.dto.user.reponse.LoginResponseDto;
 import ium.pethub.dto.user.reponse.TokenResponseDto;
 import ium.pethub.dto.user.reponse.UserLoginResponseDto;
-import ium.pethub.dto.user.request.LoginRequestDto;
+import ium.pethub.dto.user.request.UserLoginRequestDto;
 import ium.pethub.dto.user.request.UserJoinRequestDto;
 import ium.pethub.dto.user.request.UserPasswordRequestDto;
 import ium.pethub.service.AuthService;
@@ -14,12 +12,10 @@ import ium.pethub.util.AuthCheck;
 import ium.pethub.util.UserContext;
 import ium.pethub.util.ValidToken;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.module.Configuration;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -58,10 +54,9 @@ public class AuthController {
         ));
     }
 
-    //TODO : login return builder??
     @PostMapping("/api/auth/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto request) throws Exception {
-        LoginResponseDto responseDto = authService.login(request);
+    public ResponseEntity<?> login(@RequestBody UserLoginRequestDto request) throws Exception {
+        UserLoginResponseDto responseDto = authService.login(request);
 
         ResponseCookie AccessToken = authService.getAccessTokenCookie(
                 responseDto.getTokenResponseDto().getACCESS_TOKEN());
@@ -73,7 +68,7 @@ public class AuthController {
                 .header("Set-Cookie", AccessToken.toString())
                 .header("Set-Cookie", RefreshToken.toString())
                 .body(ResponseDto.of("로그인을 성공하였습니다",
-                        new UserLoginResponseDto(responseDto.getNickName(), responseDto.getUserImage())));
+                        responseDto));
     }
 
     @ValidToken
@@ -90,7 +85,7 @@ public class AuthController {
     }
 
     @ValidToken
-    @GetMapping("/api/auth/check-pw")
+    @PostMapping("/api/auth/check-pw")
     public ResponseEntity<?> checkPassword(@RequestBody Map<String, String> password) throws Exception {
         authService.checkPassword(UserContext.userData.get().getUserId(), password.get("password"));
         return ResponseEntity.ok().body(ResponseDto.of(

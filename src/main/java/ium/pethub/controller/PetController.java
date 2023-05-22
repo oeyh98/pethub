@@ -50,7 +50,7 @@ public class PetController {
         return ResponseEntity.ok().body(ResponseDto.of("펫 삭제에 성공하였습니다"));
     }
 
-    // 펫 조회
+    // 펫 상세 조회
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/pet/{petId}")
@@ -71,6 +71,7 @@ public class PetController {
 
     // 펫 리스트 조회
     // nickname
+    //TODO: 소셜로그인
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/pet/nickname")
