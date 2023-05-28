@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -28,7 +27,8 @@ public class UserController {
     @ValidToken
     @GetMapping("/api/user")
     public ResponseEntity<?> getUserInfoById() {
-        UserInfoResponseDto responseDto = userService.getUserById(UserContext.userData.get().getUserId());
+        Long userId = UserContext.userData.get().getUserId();
+        UserInfoResponseDto responseDto = userService.getUserById(userId);
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, responseDto));
 
     }
@@ -48,7 +48,8 @@ public class UserController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/user")
     public ResponseEntity<Object> updateUserInfo(@RequestBody UserUpdateRequestDto requestDto) {
-        userService.updateUser(UserContext.userData.get().getUserId(), requestDto);
+        Long userId = UserContext.userData.get().getUserId();
+        userService.updateUser(userId, requestDto);
         return ResponseEntity.ok().build();
     }
 

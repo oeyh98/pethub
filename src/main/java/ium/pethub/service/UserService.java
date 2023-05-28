@@ -4,8 +4,6 @@ import ium.pethub.domain.entity.User;
 import ium.pethub.domain.repository.UserRepository;
 import ium.pethub.dto.user.reponse.UserInfoResponseDto;
 import ium.pethub.dto.user.request.UserUpdateRequestDto;
-import ium.pethub.util.AESEncryption;
-import ium.pethub.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

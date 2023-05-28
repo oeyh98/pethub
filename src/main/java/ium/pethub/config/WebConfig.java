@@ -47,13 +47,13 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // List<String> excludes = Arrays.asList("/favicon.ico");
         registry.addInterceptor(validInterceptor());
-        registry.addInterceptor(authInterceptor());//.excludePathPatterns(excludes);
+        registry.addInterceptor(authInterceptor());
     }
 
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        Path path = Paths.get("MSL-back/src/main/upload/img/");
-//        registry.addResourceHandler("/upload_img/**")
-//                .addResourceLocations("file:"+ path.toAbsolutePath()+"/");
-//    }
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        Path path = Paths.get("pethub/src/main/upload/img/");
+        registry.addResourceHandler("/upload_img/**")
+                .addResourceLocations("file:"+ path.toAbsolutePath()+"/");
+    }
 }

@@ -21,14 +21,14 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class PetController {
-    private final PetService petService;
+    private final PetService petServiceImpl;
 
     // 펫 등록
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/pet")
     public ResponseEntity<Object> registerPet(@RequestBody PetRequestDto petRequestDto) {
-        petService.registerPet(UserContext.userData.get().getUserId(), petRequestDto);
+        petServiceImpl.registerPet(UserContext.userData.get().getUserId(), petRequestDto);
         return ResponseEntity.ok().body(ResponseDto.of("펫 등록에 성공하였습니다"));
     }
 
@@ -37,7 +37,7 @@ public class PetController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/pet/{petId}")
     public ResponseEntity<Object> updatePet(@PathVariable Long petId, @RequestBody PetRequestDto petRequestDto) {
-        petService.updatePet(petId, petRequestDto);
+        petServiceImpl.updatePet(petId, petRequestDto);
         return ResponseEntity.ok().body(ResponseDto.of("펫 수정에 성공하였습니다"));
     }
 
@@ -46,7 +46,7 @@ public class PetController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/api/pet/{petId}")
     public ResponseEntity<Object> deletePet(@PathVariable("petId") Long petId) {
-        petService.deletePet(petId);
+        petServiceImpl.deletePet(petId);
         return ResponseEntity.ok().body(ResponseDto.of("펫 삭제에 성공하였습니다"));
     }
 
@@ -55,7 +55,7 @@ public class PetController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/pet/{petId}")
     public ResponseEntity<Object> getPet(@PathVariable Long petId) {
-        PetInfoResponseDto petInfoResponseDto = petService.findPetByPetId(petId);
+        PetInfoResponseDto petInfoResponseDto = petServiceImpl.findPetByPetId(petId);
         return ResponseEntity.ok().body(ResponseDto.of("펫 조회에 성공하였습니다", petInfoResponseDto));
     }
 
@@ -65,7 +65,7 @@ public class PetController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/pet")
     public ResponseEntity<Object> getPetList() {
-        List<PetListResponseDto> responseDto = petService.findPetListByUserId(UserContext.userData.get().getUserId());
+        List<PetListResponseDto> responseDto = petServiceImpl.findPetListByUserId(UserContext.userData.get().getUserId());
         return ResponseEntity.ok().body(ResponseDto.of("펫 리스트 조회에 성공하였습니다", responseDto));
     }
 
@@ -76,7 +76,7 @@ public class PetController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/pet/nickname")
     public ResponseEntity<Object> getPetList(@RequestParam("nickname") String nickname) {
-        List<PetListResponseDto> responseDto = petService.findPetListByNickname(nickname);
+        List<PetListResponseDto> responseDto = petServiceImpl.findPetListByNickname(nickname);
         return ResponseEntity.ok().body(ResponseDto.of("펫 리스트 조회에 성공하였습니다", responseDto));
     }
 
@@ -85,6 +85,6 @@ public class PetController {
     @PostMapping("/api/pet/{petId}/image")
     public ResponseEntity<?> uploadUserImage(@RequestParam("photo") MultipartFile imageFile, @PathVariable Long petId) throws IOException {
 
-        return ResponseEntity.ok().body(petService.uploadUserImage(imageFile, petId));
+        return ResponseEntity.ok().body(petServiceImpl.uploadUserImage(imageFile, petId));
     }
 }

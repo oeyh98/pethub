@@ -1,20 +1,14 @@
 package ium.pethub.domain.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import ium.pethub.dto.post.request.PostUpdateRequestDto;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "posts")
-public class Post {
+public class Post extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "post_id")
@@ -23,4 +17,23 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+    @Column(nullable = false)
+    private String title;
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String content;
+    private String thumbnail;
+
+    @Builder
+    public Post(User user, String title, String content, String thumbnail) {
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.thumbnail = thumbnail;
+    }
+
+    public void update(PostUpdateRequestDto requestDto){
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.thumbnail= requestDto.getThumbnail();
+    }
 }
