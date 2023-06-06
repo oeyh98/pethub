@@ -18,6 +18,7 @@ public class PostListResponseDto {
     private Long postId;
     private String title;
     private String thumbnail;
+    private String content;
     private LocalDateTime createdAt;
 
     private List<CommentResponseDto> commentList;
@@ -28,10 +29,10 @@ public class PostListResponseDto {
         this.title = post.getTitle();
         this.thumbnail = post.getThumbnail();
         this.createdAt = post.getCreatedAt();
-
         this.commentList = post.getCommentList().stream()
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
         this.ownerInfo = new OwnerResponseDto(post.getOwner());
+        this.content = post.getContent();
     }
 }

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public class PostResponseDto {
+
     private Long postId;
     private String thumbnail;
     private String title;
@@ -25,6 +26,7 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
 
         this.ownerInfo = new OwnerResponseDto(post.getOwner());
+
     }
 }
 
