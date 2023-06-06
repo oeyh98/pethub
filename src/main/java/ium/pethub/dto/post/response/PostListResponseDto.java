@@ -15,6 +15,7 @@ public class PostListResponseDto {
     private Long postId;
     private String title;
     private String thumbnail;
+    private String content;
     private LocalDateTime createdAt;
 
     private OwnerResponseDto ownerInfo;
@@ -24,7 +25,8 @@ public class PostListResponseDto {
         this.title = post.getTitle();
         this.thumbnail = post.getThumbnail();
         this.createdAt = post.getCreatedAt();
-
         this.ownerInfo = new OwnerResponseDto(post.getOwner());
+        //TODO : 필요한가요??
+        //this.content = post.getContent();
     }
 }
