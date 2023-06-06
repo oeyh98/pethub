@@ -1,4 +1,4 @@
-package ium.pethub.dto.user.request;
+package ium.pethub.dto.owner.resquest;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,11 +8,9 @@ import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
-public class UserUpdateRequestDto {
-    @NotEmpty
+public class OwnerUpdateRequestDto {
     private String nickname;
-    private String phoneNumber;
-    private String userImage;
+    private String ownerImage;
     private LocalDate birth;
     private String address;
 }

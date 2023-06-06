@@ -1,9 +1,10 @@
 package ium.pethub.service;
 
+import ium.pethub.domain.entity.Owner;
 import ium.pethub.domain.entity.Pet;
 import ium.pethub.domain.entity.User;
+import ium.pethub.domain.repository.OwnerRepository;
 import ium.pethub.domain.repository.PetRepository;
-import ium.pethub.domain.repository.UserRepository;
 import ium.pethub.dto.pet.request.PetRequestDto;
 import ium.pethub.dto.pet.response.PetInfoResponseDto;
 import ium.pethub.dto.pet.response.PetListResponseDto;
@@ -27,13 +28,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class PetService {
     private final PetRepository petRepository;
-    private final UserRepository userRepository;
+    private final OwnerRepository ownerRepository;
 
-    public void registerPet(Long ownerId, PetRequestDto requestDto) {
-        User user = userRepository.findById(ownerId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. id=" + ownerId));
+    public void registerPet(Long userId, PetRequestDto requestDto) {
+        Owner owner = ownerRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. id=" + userId));
 
-        Pet pet = requestDto.toEntity(user);
+        Pet pet = requestDto.toEntity(owner);
         petRepository.save(pet);
     }
 
@@ -45,10 +46,10 @@ public class PetService {
     }
 
     public List<PetListResponseDto> findPetListByUserId(Long userId) {
-        User user = userRepository.findById(userId)
+        Owner owner = ownerRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. id=" + userId));
 
-        List<Pet> petList = petRepository.findAllByUser(user);
+        List<Pet> petList = petRepository.findAllByOwner(owner);
 
         return petList.stream()
                 .map(pet -> new PetListResponseDto(pet.getId(), pet.getName(), pet.getImage()))
@@ -56,10 +57,10 @@ public class PetService {
     }
 
     public List<PetListResponseDto> findPetListByNickname(String nickname) {
-        User user = userRepository.findByNickname(nickname)
+        Owner owner = ownerRepository.findByNickname(nickname)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. nickname=" + nickname));
 
-        List<Pet> petList = petRepository.findAllByUser(user);
+        List<Pet> petList = petRepository.findAllByOwner(owner);
 
         return petList.stream()
                 .map(pet -> new PetListResponseDto(pet.getId(), pet.getName(), pet.getImage()))

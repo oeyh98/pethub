@@ -1,5 +1,6 @@
 package ium.pethub.domain.repository;
 
+import ium.pethub.domain.entity.Owner;
 import ium.pethub.domain.entity.Pet;
 import ium.pethub.domain.entity.User;
 import ium.pethub.dto.pet.response.PetListResponseDto;
@@ -11,5 +12,5 @@ import java.util.List;
 
 public interface PetRepository extends JpaRepository<Pet, Long> {
 
-    List<Pet> findAllByUser(User user);
+    List<Pet> findAllByOwner(Owner owner);
 }

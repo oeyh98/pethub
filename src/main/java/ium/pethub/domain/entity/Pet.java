@@ -34,11 +34,11 @@ public class Pet extends BaseTimeEntity{
     private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",nullable = false)
-    private User user;
+    @JoinColumn(name = "owner_id",nullable = false)
+    private Owner owner;
 
     @Builder
-    public Pet(String name, String gender, String age, int weight, String breed, String introduction, String image, User owner) {
+    public Pet(String name, String gender, String age, int weight, String breed, String introduction, String image, Owner owner) {
         this.name = name;
         this.gender = gender;
         this.age = age;
@@ -46,7 +46,7 @@ public class Pet extends BaseTimeEntity{
         this.breed = breed;
         this.introduction = introduction;
         this.image = image;
-        this.user = owner;
+        this.owner = owner;
     }
 
     public void update(PetRequestDto requestDto){

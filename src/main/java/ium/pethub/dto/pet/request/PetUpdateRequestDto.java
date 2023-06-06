@@ -10,5 +10,10 @@ import lombok.Setter;
 public class PetUpdateRequestDto {
     private Long petId;
     private String petName;
-
+    private String petGender;
+    private String petAge;
+    private int petWeight;
+    private String petBreed;
+    private String petIntroduction;
+    private String petImage;
 }

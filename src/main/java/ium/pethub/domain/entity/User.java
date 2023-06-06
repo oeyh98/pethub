@@ -1,22 +1,17 @@
 package ium.pethub.domain.entity;
 
-import ium.pethub.dto.user.request.UserUpdateRequestDto;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
+@NoArgsConstructor
 public class User extends BaseTimeEntity{
 
     @Id
@@ -24,53 +19,55 @@ public class User extends BaseTimeEntity{
     @Column(nullable = false, name = "user_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleType role;
+
+    @Column(nullable = false)
+    private String name;
+
     @Column(nullable = false, unique = true)
     private String email;
-
-    @Column(nullable = false, unique = true)
-    private String nickname;
-
-    @Column(nullable = false, unique = true)
-    private String phoneNumber;
-
-    private LocalDate birth;
 
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private RoleType role;
-
-    private String address;
-
-    private String userImage;
+    @Column(nullable = false)
+    private String callNumber;
 
     @Column(length = 1000)
     private String refreshToken;
 
+    private LocalDateTime withdrawAt;
+
+
     @ColumnDefault("0")
     private int withdrawYn;
 
-    private LocalDateTime withdrawAt;
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Owner owner;
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
-    private Set<Post> postList = new HashSet<>();
-
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
-    private List<Comment> commentList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
-    private List<Comment> petList = new ArrayList<>();
-
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Vet vet;
 
     @Builder
-    public User(String email, String password, String nickname, String phoneNumber) {
+    public User(RoleType role, String name, String email, String password, String callNumber) {
+        this.name = name;
+        this.role = role;
         this.email = email;
         this.password = password;
-        this.role = RoleType.USER;
-        this.nickname = nickname;
-        this.phoneNumber = phoneNumber;
+        this.callNumber = callNumber;
     }
+
+
+    public void joinOwner(Owner owner){
+        this.owner = owner;
+    }
+
+    public void joinVet(Vet vet){
+        this.vet = vet;
+    }
+
 
     public void destroyRefreshToken(){
         this.refreshToken = null;
@@ -78,11 +75,6 @@ public class User extends BaseTimeEntity{
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
-    }
-
-    public void update(UserUpdateRequestDto requestDto) {
-        this.nickname = requestDto.getNickname();
-        this.userImage = requestDto.getUserImage();
     }
 
     public void resetPassword(String encryptedPassword) {
@@ -94,7 +86,5 @@ public class User extends BaseTimeEntity{
         this.withdrawAt = LocalDateTime.now();
     }
 
-    public void setUserImage(String userImage) {
-        this.userImage = userImage;
-    }
+
 }

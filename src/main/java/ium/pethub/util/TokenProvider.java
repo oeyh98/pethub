@@ -11,17 +11,15 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 import java.util.Date;
 
-import static ium.pethub.util.AuthConstants.ACCESS_EXPIRE;
-import static ium.pethub.util.AuthConstants.PASSWORD_RESET_TOKEN_VALID_TIME;
+import static ium.pethub.util.AuthConstants.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtTokenProvider implements InitializingBean {
+public class TokenProvider implements InitializingBean {
 
     @Value("${secret.key}")
     private String SECRET_KEY;
-
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -41,10 +39,11 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
 
+    //TODO: email 추가하자?
     public String createAccessToken(Long userId, RoleType roleType) {
         Claims claims = Jwts.claims();//.setSubject(userPk); // JWT payload 에 저장되는 정보단위
-        claims.put("userId", userId);
-        claims.put("role", roleType);
+        claims.put(USERID, userId);
+        claims.put(ROLE, roleType);
 
         Date now = new Date();
         return Jwts.builder()
@@ -58,7 +57,7 @@ public class JwtTokenProvider implements InitializingBean {
 
     public String createRefreshToken(Long userId) {
         Claims claims = Jwts.claims();
-        claims.put("userId",userId);
+        claims.put(USERID,userId);
         Date now = new Date();
         Date expiration = new Date(now.getTime() + ACCESS_EXPIRE);
 
@@ -77,7 +76,7 @@ public class JwtTokenProvider implements InitializingBean {
 
     public Long getUserId(String token){
         Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-        return Long.parseLong(String.valueOf(claims.get("userId")));
+        return Long.parseLong(String.valueOf(claims.get(USERID)));
     }
 
 

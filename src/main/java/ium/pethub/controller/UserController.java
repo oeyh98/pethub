@@ -1,62 +1,120 @@
 package ium.pethub.controller;
 
+
 import ium.pethub.dto.common.ResponseDto;
-import ium.pethub.dto.user.reponse.UserInfoResponseDto;
-import ium.pethub.dto.user.request.UserUpdateRequestDto;
+import ium.pethub.dto.user.request.UserJoinRequestDto;
+import ium.pethub.dto.user.request.UserLoginRequestDto;
+import ium.pethub.dto.user.response.UserLoginResponseDto;
+import ium.pethub.dto.user.response.UserTokenResponseDto;
 import ium.pethub.service.UserService;
 import ium.pethub.util.AuthCheck;
 import ium.pethub.util.UserContext;
 import ium.pethub.util.ValidToken;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.Map;
+
+import static ium.pethub.util.AuthConstants.*;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-
     private final UserService userService;
 
-//    TODO: 펫정보, 게시물 정보 한번에 가져오도록 변경해야함
-    //유저 조회
-    //id 조회는 본인만 이용될 것이기에 토큰으로
-    @ValidToken
-    @GetMapping("/api/user")
-    public ResponseEntity<?> getUserInfoById() {
-        Long userId = UserContext.userData.get().getUserId();
-        UserInfoResponseDto responseDto = userService.getUserById(userId);
-        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, responseDto));
+    @PostMapping("/api/user/duplicate-email")
+    public ResponseEntity<Object> duplicateEmail(@RequestBody Map<String, String> email) {
+        String mail = email.get(EMAIL);
+        userService.duplicateEmail(mail);
+        return ResponseEntity.ok().body(ResponseDto.of("사용 가능한 이메일입니다"));
+    }
+
+    @PostMapping("/api/user/duplicate-phone")
+    public ResponseEntity<Object> duplicateCallNumber(@RequestBody Map<String, String> callNumber) {
+        String phone = callNumber.get("callNumber");
+        userService.duplicateCallNumber(phone);
+        return ResponseEntity.ok().body(ResponseDto.of("사용 가능한 번호입니다"));
 
     }
 
-//    TODO: 펫정보, 게시물 정보 한번에 가져오도록 변경해야함
-    //TODO: 에러 내용 확인
-    //유저 조회
-    //본인 이외의 유저 조회시 닉네임 이용
-    @ValidToken
-    @GetMapping("/api/user/nickname")
-    public ResponseEntity<?> getUserInfoByNickname(@RequestParam("nickname") String nickname) {
-        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, userService.getUserByNickname(nickname)));
+    @PostMapping("/api/user/join")
+    public ResponseEntity<Object> join(@RequestBody UserJoinRequestDto joinRequestDto) throws Exception {
+        userService.duplicateEmail(joinRequestDto.getEmail());
+        userService.duplicateCallNumber(joinRequestDto.getCallNumber());
+        userService.join(joinRequestDto);
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "회원가입에 성공하였습니다."
+        ));
     }
 
-    //유저 정보 수정
+
+    @PostMapping("/api/user/login")
+    public ResponseEntity<Object> login(@RequestBody UserLoginRequestDto request) throws Exception {
+        UserLoginResponseDto responseDto = userService.login(request);
+
+        ResponseCookie AccessToken = userService.getAccessTokenCookie(
+                responseDto.getAuthTokenResponseDto().getACCESS_TOKEN());
+
+        ResponseCookie RefreshToken = userService.getRefreshTokenCookie(
+                responseDto.getAuthTokenResponseDto().getREFRESH_TOKEN());
+
+        return ResponseEntity.ok()
+                .header("Set-Cookie", AccessToken.toString())
+                .header("Set-Cookie", RefreshToken.toString())
+                .body(ResponseDto.of("로그인을 성공하였습니다",
+                        responseDto));
+    }
+
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PutMapping("/api/user")
-    public ResponseEntity<Object> updateUserInfo(@RequestBody UserUpdateRequestDto requestDto) {
-        Long userId = UserContext.userData.get().getUserId();
-        userService.updateUser(userId, requestDto);
-        return ResponseEntity.ok().build();
+    @PostMapping("/api/user/logout")
+    public ResponseEntity<Object> logout() {
+        userService.removeRefreshToken(UserContext.userData.get().getUserId());
+        return ResponseEntity.ok()
+                .header("Set-Cookie", "ACCESS_TOKEN=; path=/; max-age=0; expires=0;")
+                .header("Set-Cookie", "REFRESH_TOKEN=; path=/updateToken; max-age=0; expires=0;")
+                .body(ResponseDto.of(
+                        "로그아웃 성공")
+                );
     }
 
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/api/user/image")
-    public ResponseEntity<?> uploadUserImage(@RequestParam("photo") MultipartFile imageFile) throws IOException {
-       return ResponseEntity.ok().body(userService.uploadUserImage(imageFile,UserContext.userData.get().getUserId()));
+    @PostMapping("/api/user/check-pw")
+    public ResponseEntity<?> checkPassword(@RequestBody Map<String, String> password) throws Exception {
+        userService.checkPassword(UserContext.userData.get().getUserId(), password.get(PASSWORD));
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "비밀번호가 일치합니다."
+        ));
+    }
+
+    @ValidToken
+    @PutMapping("/api/user/change-pw")
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> password) throws Exception {
+        userService.updatePassword(UserContext.userData.get().getUserId(), password.get(PASSWORD));
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "비밀번호 변경에 성공하였습니다."
+        ));
+    }
+
+    @ValidToken
+    @GetMapping("/api/user/update-token")
+    public ResponseEntity<Object> updateAccessToken(@CookieValue(REFRESH_TOKEN) String refreshToken) throws Exception {
+
+        UserTokenResponseDto token = userService.updateAccessToken(UserContext.userData.get().getUserId(), refreshToken);
+        ResponseCookie AccessToken = userService.getAccessTokenCookie(
+                token.getACCESS_TOKEN());
+
+        return ResponseEntity.ok()
+                .header("Set-Cookie", AccessToken.toString()).build();
+    }
+
+    @ValidToken
+    @PostMapping("/api/user/withdraw")
+    public ResponseEntity withdraw(){
+        userService.withdraw(UserContext.userData.get().getUserId());
+
+        return ResponseEntity.ok().body(new ResponseDto("회원이 탈퇴되었습니다."));
     }
 }
