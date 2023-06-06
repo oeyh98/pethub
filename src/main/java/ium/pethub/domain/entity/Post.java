@@ -15,8 +15,8 @@ public class Post extends BaseTimeEntity{
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
     @Column(nullable = false)
     private String title;
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -24,8 +24,8 @@ public class Post extends BaseTimeEntity{
     private String thumbnail;
 
     @Builder
-    public Post(User user, String title, String content, String thumbnail) {
-        this.user = user;
+    public Post(Owner owner, String title, String content, String thumbnail) {
+        this.owner = owner;
         this.title = title;
         this.content = content;
         this.thumbnail = thumbnail;

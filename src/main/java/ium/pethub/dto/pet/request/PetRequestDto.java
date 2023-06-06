@@ -1,7 +1,7 @@
 package ium.pethub.dto.pet.request;
 
+import ium.pethub.domain.entity.Owner;
 import ium.pethub.domain.entity.Pet;
-import ium.pethub.domain.entity.User;
 import lombok.Getter;
 
 @Getter
@@ -14,8 +14,8 @@ public class PetRequestDto {
     private String petIntroduction;
     private String petImage;
 
-    public Pet toEntity(User user){
-        return         Pet.builder()
+    public Pet toEntity(Owner owner){
+        return Pet.builder()
                 .name(petName)
                 .gender(petGender)
                 .age(petAge)
@@ -23,7 +23,7 @@ public class PetRequestDto {
                 .breed(petBreed)
                 .introduction(petIntroduction)
                 .image(petImage)
-                .owner(user)
+                .owner(owner)
                 .build();
 
     }

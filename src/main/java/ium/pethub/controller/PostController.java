@@ -7,6 +7,7 @@ import ium.pethub.dto.post.request.PostUpdateRequestDto;
 import ium.pethub.dto.post.response.PostListResponseDto;
 import ium.pethub.dto.post.response.PostResponseDto;
 import ium.pethub.service.PostService;
+import ium.pethub.util.AuthCheck;
 import ium.pethub.util.UserContext;
 import ium.pethub.util.ValidToken;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +23,14 @@ public class PostController {
 
     private final PostService postService;
 
+    //TODO: post 분리
     @ValidToken
+    @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping
     public ResponseEntity savePost(@RequestBody PostSaveRequestDto requestDto) {
-        Long userId = UserContext.userData.get().getUserId();
-        Long postId = postService.savePost(userId, requestDto);
-        return ResponseEntity.ok().body(ResponseDto.of("게시물 작성이 완료되었습니다.",postId));
+        Long ownerId = UserContext.userData.get().getUserId();
+        Long postId = postService.savePost(ownerId, requestDto);
+        return ResponseEntity.ok().body(ResponseDto.of("게시물 작성이 완료되었습니다.", postId));
     }
 
     @GetMapping("/posts/{page}")

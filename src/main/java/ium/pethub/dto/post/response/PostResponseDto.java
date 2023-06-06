@@ -1,5 +1,6 @@
 package ium.pethub.dto.post.response;
 import ium.pethub.domain.entity.Post;
+import ium.pethub.dto.owner.response.OwnerResponseDto;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -9,26 +10,21 @@ import java.util.stream.Collectors;
 @Getter
 public class PostResponseDto {
     private Long postId;
-
-    private Long userId;
-    private String nickname;
-    private String userImage;
-
     private String thumbnail;
     private String title;
     private String content;
     private LocalDateTime createdAt;
-    private int likeCnt;
+
+    private OwnerResponseDto ownerInfo;
 
     public PostResponseDto(Post post) {
         this.postId = post.getId();
-        this.userId = post.getUser().getId();
-        this.nickname = post.getUser().getNickname();
-        this.userImage = post.getUser().getUserImage();
         this.thumbnail = post.getThumbnail();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
+
+        this.ownerInfo = new OwnerResponseDto(post.getOwner());
     }
 }
 

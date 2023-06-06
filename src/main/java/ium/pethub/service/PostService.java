@@ -1,7 +1,9 @@
 package ium.pethub.service;
 
+import ium.pethub.domain.entity.Owner;
 import ium.pethub.domain.entity.Post;
 import ium.pethub.domain.entity.User;
+import ium.pethub.domain.repository.OwnerRepository;
 import ium.pethub.domain.repository.PostRepository;
 import ium.pethub.domain.repository.UserRepository;
 import ium.pethub.dto.post.request.PostSaveRequestDto;
@@ -20,23 +22,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final PostRepository postsRepository;
-    private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final OwnerRepository ownerRepository;
 
     @Transactional
     public Long savePost(Long userId, PostSaveRequestDto requestDto) {
-        User user = userRepository.findById(userId).orElseThrow(
+        Owner owner = ownerRepository.findByUserId(userId).orElseThrow(
                 () -> new EntityNotFoundException("회원이 존재하지 않습니다. id=" + userId));
 
-        Post post = requestDto.toEntity(user);
-        postsRepository.save(post);
+        Post post = requestDto.toEntity(owner);
+        postRepository.save(post);
         return post.getId();
     }
 
     @Transactional(readOnly = true)
     public Page<PostListResponseDto> getAllPosts(int page){
         Pageable pageable = PageRequest.of(page, 8, Sort.by("createdAt").descending());
-        Page<Post> posts = postsRepository.findAll(pageable);
+        Page<Post> posts = postRepository.findAll(pageable);
         List<PostListResponseDto> postList = posts.stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
@@ -44,26 +46,27 @@ public class PostService {
         return new PageImpl<>(postList, pageable, posts.getTotalElements());
     }
 
+    //User -> Owner -> Post ???? 뭐이리 돌아가 이게 맞아?
     @Transactional(readOnly = true)
     public Page<PostListResponseDto> findPostsByUserId(Long userId, int page){
-        userRepository.findById(userId).orElseThrow(
+        Owner owner = ownerRepository.findByUserId(userId).orElseThrow(
                 () -> new EntityNotFoundException("회원이 존재하지 않습니다. id=" + userId));
 
-        Pageable pageable = PageRequest.of(page, 8, Sort.by("createdAt").descending());
-        Page<Post> posts = postsRepository.findAllByUserId(userId, pageable);
-        List<PostListResponseDto> postList = posts.stream()
-                .map(PostListResponseDto::new)
-                .collect(Collectors.toList());
-        return new PageImpl<>(postList, pageable, posts.getTotalElements());
+        return getPostListResponseDto(owner.getId(), page);
     }
 
     @Transactional(readOnly = true)
     public Page<PostListResponseDto> findPostsByNickname(String nickname, int page){
-        userRepository.findByNickname(nickname).orElseThrow(
+        Owner owner = ownerRepository.findByNickname(nickname).orElseThrow(
                 () -> new EntityNotFoundException("회원이 존재하지 않습니다. nickname=" + nickname));
 
+        return getPostListResponseDto(owner.getId(), page);
+    }
+
+    @Transactional(readOnly = true)
+    Page<PostListResponseDto> getPostListResponseDto(Long ownerId, int page) {
         Pageable pageable = PageRequest.of(page, 8, Sort.by("createdAt").descending());
-        Page<Post> posts = postsRepository.findAllByUser_Nickname(nickname, pageable);
+        Page<Post> posts = postRepository.findAllByOwnerId(ownerId, pageable);
         List<PostListResponseDto> postList = posts.stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
@@ -72,14 +75,14 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Post getPostById(Long postId){
-        Post post = postsRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시물이 존재하지 않습니다. id=" +  postId));
         return post;
     }
 
     @Transactional
     public void updatePost(Long postId, PostUpdateRequestDto requestDto) {
-        Post post = postsRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(
                         ()-> new EntityNotFoundException("게시물이 존재하지 않습니다. id=" + postId));
 
@@ -88,10 +91,10 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long postId) {
-        Post post = postsRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(
                         () -> new EntityNotFoundException("게시물이 존재하지 않습니다. id=" + postId)
                 );
-        postsRepository.delete(post);
+        postRepository.delete(post);
     }
 }
