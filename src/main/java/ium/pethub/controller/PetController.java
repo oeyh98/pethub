@@ -26,16 +26,16 @@ public class PetController {
 
     // 펫 등록
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @PostMapping("/api/pet")
     public ResponseEntity<Object> registerPet(@RequestBody PetRequestDto petRequestDto) {
-        petService.registerPet(UserContext.userData.get().getUserId(), petRequestDto);
-        return ResponseEntity.ok().body(ResponseDto.of("펫 등록에 성공하였습니다"));
+        long petId = petService.registerPet(UserContext.userData.get().getUserId(), petRequestDto);
+        return ResponseEntity.ok().body(ResponseDto.of("펫 등록에 성공하였습니다", Map.of("petId", petId)));
     }
 
     // 펫 수정
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @PutMapping("/api/pet/{petId}")
     public ResponseEntity<Object> updatePet(@PathVariable Long petId, @RequestBody PetRequestDto petRequestDto) {
         petService.updatePet(petId, petRequestDto);
@@ -44,7 +44,7 @@ public class PetController {
 
     // 펫 삭제
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @DeleteMapping("/api/pet/{petId}")
     public ResponseEntity<Object> deletePet(@PathVariable Long petId) {
         petService.deletePet(petId);
@@ -53,7 +53,7 @@ public class PetController {
 
     // 펫 상세 조회
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @GetMapping("/api/pet/{petId}")
     public ResponseEntity<Object> getPet(@PathVariable Long petId) {
         PetInfoResponseDto petInfoResponseDto = petService.findPetByPetId(petId);
@@ -63,7 +63,7 @@ public class PetController {
     // 펫 리스트 조회
     // userId
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @GetMapping("/api/pet")
     public ResponseEntity<Object> getPetList() {
         List<PetListResponseDto> responseDto = petService.findPetListByUserId(UserContext.userData.get().getUserId());
@@ -74,7 +74,7 @@ public class PetController {
     // nickname
     //TODO: 소셜로그인
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @GetMapping("/api/pet/nickname")
     public ResponseEntity<Object> getPetList(@RequestBody Map<String, String> nickname) {
         List<PetListResponseDto> responseDto = petService.findPetListByNickname(nickname.get("nickname"));
@@ -82,7 +82,7 @@ public class PetController {
     }
 
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @PostMapping("/api/pet/{petId}/image")
     public ResponseEntity<?> uploadUserImage(@RequestParam("photo") MultipartFile imageFile, @PathVariable Long petId) throws IOException {
 

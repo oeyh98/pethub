@@ -1,12 +1,15 @@
 package ium.pethub.dto.post.response;
 
 import ium.pethub.domain.entity.Post;
+import ium.pethub.dto.comment.response.CommentResponseDto;
 import ium.pethub.dto.owner.response.OwnerResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +21,7 @@ public class PostListResponseDto {
     private String content;
     private LocalDateTime createdAt;
 
+    private List<CommentResponseDto> commentList;
     private OwnerResponseDto ownerInfo;
 
     public PostListResponseDto(Post post) {
@@ -25,8 +29,10 @@ public class PostListResponseDto {
         this.title = post.getTitle();
         this.thumbnail = post.getThumbnail();
         this.createdAt = post.getCreatedAt();
+        this.commentList = post.getCommentList().stream()
+                .map(CommentResponseDto::new)
+                .collect(Collectors.toList());
         this.ownerInfo = new OwnerResponseDto(post.getOwner());
-        //TODO : 필요한가요??
-        //this.content = post.getContent();
+        this.content = post.getContent();
     }
 }

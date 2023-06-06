@@ -38,15 +38,15 @@ public class AuthInterceptor implements HandlerInterceptor, Ordered {
             return false;
         }
 
-        if (auth.role().equals(AuthCheck.Role.USER)) {
-            if (!userData.getUserRole().equals(AuthCheck.Role.USER.toString())) {
+        if (auth.role().equals(AuthCheck.Role.OWNER)) {
+            if (!userData.getUserRole().equals(AuthCheck.Role.OWNER.toString())) {
                 new AccessDeniedException("접근권한이 없습니다.");
                 return false;
             }
         }
 
-        if (auth.role().equals(AuthCheck.Role.ADMIN)) {
-            if (!userData.getUserRole().equals(AuthCheck.Role.ADMIN.toString())) {
+        if (auth.role().equals(AuthCheck.Role.VET)) {
+            if (!userData.getUserRole().equals(AuthCheck.Role.VET.toString())) {
                 new AccessDeniedException("접근권한이 없습니다.");
                 return false;
             }

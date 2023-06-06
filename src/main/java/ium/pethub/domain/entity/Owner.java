@@ -31,7 +31,7 @@ public class Owner extends BaseTimeEntity {
     private String ownerImage;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "owner",fetch = FetchType.LAZY)
@@ -40,13 +40,11 @@ public class Owner extends BaseTimeEntity {
     @OneToMany(mappedBy = "owner",fetch = FetchType.LAZY)
     private List<Pet> petList = new ArrayList<>();
 
-
     @Builder
     public Owner(User user, String nickname) {
         this.user = user;
         this.nickname = nickname;
     }
-
 
     public void update(OwnerUpdateRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
