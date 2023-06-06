@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @PostMapping("/api/user/logout")
     public ResponseEntity<Object> logout() {
         userService.removeRefreshToken(UserContext.userData.get().getUserId());

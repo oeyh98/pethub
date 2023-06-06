@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,8 +27,11 @@ public class Vet extends BaseTimeEntity{
     private String career;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vet_id")
+    @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
+    private List<Comment> commentList = new ArrayList<>();
 
     @Builder
     public Vet(User user) {

@@ -30,12 +30,13 @@ public class PetService {
     private final PetRepository petRepository;
     private final OwnerRepository ownerRepository;
 
-    public void registerPet(Long userId, PetRequestDto requestDto) {
+    public long registerPet(Long userId, PetRequestDto requestDto) {
         Owner owner = ownerRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. id=" + userId));
 
         Pet pet = requestDto.toEntity(owner);
         petRepository.save(pet);
+        return pet.getId();
     }
 
     public PetInfoResponseDto findPetByPetId(Long petId) {

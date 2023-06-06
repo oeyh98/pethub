@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/post")
@@ -25,12 +27,12 @@ public class PostController {
 
     //TODO: post 분리
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @PostMapping
     public ResponseEntity savePost(@RequestBody PostSaveRequestDto requestDto) {
-        Long ownerId = UserContext.userData.get().getUserId();
-        Long postId = postService.savePost(ownerId, requestDto);
-        return ResponseEntity.ok().body(ResponseDto.of("게시물 작성이 완료되었습니다.", postId));
+        Long userId = UserContext.userData.get().getUserId();
+        Long postId = postService.savePost(userId, requestDto);
+        return ResponseEntity.ok().body(ResponseDto.of("게시물 작성이 완료되었습니다.", Map.of("postId", postId)));
     }
 
     @GetMapping("/posts/{page}")

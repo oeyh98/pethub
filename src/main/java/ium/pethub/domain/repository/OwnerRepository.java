@@ -12,5 +12,4 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
 
     boolean existsByNickname(String nickname);
 
-
 }
