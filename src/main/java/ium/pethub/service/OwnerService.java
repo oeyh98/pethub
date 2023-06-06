@@ -21,7 +21,6 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class OwnerService {
 
     private final OwnerRepository ownerRepository;

@@ -1,5 +1,6 @@
 package ium.pethub.domain.entity;
 
+import ium.pethub.dto.vet.request.VetUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,14 @@ public class Vet extends BaseTimeEntity{
     @Builder
     public Vet(User user) {
         this.user = user;
+    }
+
+    public void update(VetUpdateRequestDto requestDto){
+        this.vetImage = requestDto.getVetImage();
+        this.introduction = requestDto.getIntroduction();
+        this.address = requestDto.getAddress();
+        this.clinicHour = requestDto.getClinicHour();
+        this.rating = requestDto.getRating();
+        this.career = requestDto.getCareer();
     }
 }
