@@ -19,6 +19,7 @@ public class Post extends BaseTimeEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private Owner owner;
+
     @Column(nullable = false)
     private String title;
     @Column(columnDefinition = "TEXT", nullable = false)

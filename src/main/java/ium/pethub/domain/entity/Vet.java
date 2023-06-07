@@ -30,6 +30,8 @@ public class Vet extends BaseTimeEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
+    private List<Follow> followers = new ArrayList<>();
     @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>();
 
