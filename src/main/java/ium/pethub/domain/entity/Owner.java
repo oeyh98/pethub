@@ -31,15 +31,17 @@ public class Owner extends BaseTimeEntity {
     private String ownerImage;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "owner",fetch = FetchType.LAZY)
-    private Set<Post> postList = new HashSet<>();
+    private List<Post> postList = new ArrayList<>();
 
     @OneToMany(mappedBy = "owner",fetch = FetchType.LAZY)
     private List<Pet> petList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "following", fetch = FetchType.LAZY)
+    private List<Follow> followings = new ArrayList<>();
 
     @Builder
     public Owner(User user, String nickname) {
