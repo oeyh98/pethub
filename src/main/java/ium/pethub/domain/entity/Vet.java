@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -34,6 +32,8 @@ public class Vet extends BaseTimeEntity{
 
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Follow> followers = new ArrayList<>();
+    @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
+    private List<Comment> commentList = new ArrayList<>();
 
     @Builder
     public Vet(User user) {

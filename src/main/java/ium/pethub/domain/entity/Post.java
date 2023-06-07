@@ -4,6 +4,8 @@ import ium.pethub.dto.post.request.PostUpdateRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,6 +26,9 @@ public class Post extends BaseTimeEntity{
     private String content;
     private String thumbnail;
 
+
+    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY)
+    private List<Comment> commentList = new ArrayList<>();
     @Builder
     public Post(Owner owner, String title, String content, String thumbnail) {
         this.owner = owner;

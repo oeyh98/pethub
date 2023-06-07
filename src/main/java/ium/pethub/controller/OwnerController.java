@@ -47,7 +47,7 @@ public class OwnerController {
 
     //유저 정보 수정
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @PutMapping("/api/owner")
     public ResponseEntity<Object> updateOwnerInfo(@RequestBody OwnerUpdateRequestDto requestDto) {
         Long userId = UserContext.userData.get().getUserId();
@@ -56,7 +56,7 @@ public class OwnerController {
     }
 
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.OWNER)
     @PostMapping("/api/owner/image")
     public ResponseEntity<?> uploadOwnerImage(@RequestParam("photo") MultipartFile imageFile) throws IOException {
        return ResponseEntity.ok().body(ownerService.uploadOwnerImage(imageFile,UserContext.userData.get().getUserId()));

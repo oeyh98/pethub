@@ -28,6 +28,7 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
 
         this.ownerInfo = new OwnerResponseDto(post.getOwner());
+
     }
 }
 

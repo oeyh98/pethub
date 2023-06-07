@@ -23,7 +23,7 @@ import static ium.pethub.util.AuthConstants.REFRESH_EXPIRE;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final OwnerService userService;
+    private final OwnerService ownerService;
     private final VetService vetService;
     private final TokenProvider TokenProvider;
     private final AESEncryption aesEncryption;
@@ -56,8 +56,8 @@ public class UserService {
         user.resetPassword(encryptPwd);
         userRepository.save(user);
 
-        if(role == RoleType.USER) {
-            userService.ownerJoin(user);
+        if(role == RoleType.OWNER) {
+            ownerService.ownerJoin(user);
         }
         else if(role == RoleType.VET){
             vetService.vetJoin(user);

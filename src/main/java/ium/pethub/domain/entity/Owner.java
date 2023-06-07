@@ -49,7 +49,6 @@ public class Owner extends BaseTimeEntity {
         this.nickname = nickname;
     }
 
-
     public void update(OwnerUpdateRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
         this.ownerImage = requestDto.getOwnerImage();
