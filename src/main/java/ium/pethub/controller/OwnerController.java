@@ -2,7 +2,7 @@ package ium.pethub.controller;
 
 import ium.pethub.dto.common.ResponseDto;
 import ium.pethub.dto.owner.response.OwnerInfoResponseDto;
-import ium.pethub.dto.owner.resquest.OwnerUpdateRequestDto;
+import ium.pethub.dto.owner.request.OwnerUpdateRequestDto;
 import ium.pethub.service.OwnerService;
 import ium.pethub.util.AuthCheck;
 import ium.pethub.util.UserContext;
@@ -30,7 +30,6 @@ public class OwnerController {
         OwnerInfoResponseDto responseDto = ownerService.getOwnerById(userId);
         return ResponseEntity.ok()
                 .body(ResponseDto.of(HttpStatus.OK, responseDto));
-
     }
 
     //TODO: 펫정보, 게시물 정보 한번에 가져오도록 변경해야함

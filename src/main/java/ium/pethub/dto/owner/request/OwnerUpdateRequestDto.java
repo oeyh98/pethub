@@ -1,9 +1,8 @@
-package ium.pethub.dto.owner.resquest;
+package ium.pethub.dto.owner.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 
 @NoArgsConstructor

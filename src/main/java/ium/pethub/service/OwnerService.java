@@ -4,7 +4,7 @@ import ium.pethub.domain.entity.Owner;
 import ium.pethub.domain.entity.User;
 import ium.pethub.domain.repository.OwnerRepository;
 import ium.pethub.dto.owner.response.OwnerInfoResponseDto;
-import ium.pethub.dto.owner.resquest.OwnerUpdateRequestDto;
+import ium.pethub.dto.owner.request.OwnerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

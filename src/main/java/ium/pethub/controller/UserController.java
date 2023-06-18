@@ -24,6 +24,9 @@ import static ium.pethub.util.AuthConstants.*;
 public class UserController {
     private final UserService userService;
 
+    //TODO:getUserInfoById(nickname, email)
+    //samesite none, secure true 설정
+    //
     @PostMapping("/api/user/duplicate-email")
     public ResponseEntity<Object> duplicateEmail(@RequestBody Map<String, String> email) {
         String mail = email.get(EMAIL);
@@ -49,7 +52,7 @@ public class UserController {
         ));
     }
 
-
+    //TODO: 반환처리
     @PostMapping("/api/user/login")
     public ResponseEntity<Object> login(@RequestBody UserLoginRequestDto request) throws Exception {
         UserLoginResponseDto responseDto = userService.login(request);

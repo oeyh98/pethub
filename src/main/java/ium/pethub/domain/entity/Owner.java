@@ -1,6 +1,6 @@
 package ium.pethub.domain.entity;
 
-import ium.pethub.dto.owner.resquest.OwnerUpdateRequestDto;
+import ium.pethub.dto.owner.request.OwnerUpdateRequestDto;
 import lombok.*;
 
 import javax.persistence.*;

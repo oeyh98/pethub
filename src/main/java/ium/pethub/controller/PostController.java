@@ -26,6 +26,7 @@ public class PostController {
     private final PostService postService;
 
     //TODO: post 분리
+    //TODO: 게시물 목록에서 댓글 수 반환
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.OWNER)
     @PostMapping
@@ -71,6 +72,7 @@ public class PostController {
     }
 
     //TODO: 아이디 검증
+    //댓글있으면 안됨
     @ValidToken
     @DeleteMapping("/{postId}")
     public ResponseEntity<Object> deletePost(@PathVariable Long postId){
