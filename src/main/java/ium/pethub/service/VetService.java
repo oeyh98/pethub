@@ -38,6 +38,14 @@ public class VetService {
     }
 
     @Transactional(readOnly = true)
+    public VetInfoResponseDto getVetByNickname(String nickname) {
+        Vet vet = vetRepository.findByUserNickname(nickname)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
+
+        return new VetInfoResponseDto(vet);
+    }
+
+    @Transactional(readOnly = true)
     public Page<VetResponseDto> getAllVets(int page){
         Pageable pageable = PageRequest.of(page, 8, Sort.by("createdAt").descending());
         Page<Vet> vets = vetRepository.findAll(pageable);

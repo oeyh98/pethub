@@ -10,10 +10,7 @@ import ium.pethub.util.ValidToken;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -26,7 +23,7 @@ public class CommentController {
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.VET)
     @PostMapping("api/post/{postId}/comment")
-    public ResponseEntity saveComment(@PathVariable Long postId, CommentSaveRequestDto requestDto) {
+    public ResponseEntity saveComment(@PathVariable Long postId, @RequestBody CommentSaveRequestDto requestDto) {
         Long userId = UserContext.userData.get().getUserId();
         Long commentId = commentService.saveComment(userId, postId, requestDto);
         return ResponseEntity.ok().body(ResponseDto.of("댓글 작성이 완료되었습니다.", Map.of("commentId", commentId)));
@@ -35,7 +32,7 @@ public class CommentController {
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.VET)
     @PutMapping("api/post/{postId}/comment/{commentId}")
-    public ResponseEntity updateComment(@PathVariable Long postId, @PathVariable Long commentId, CommentUpdateRequestDto requestDto) {
+    public ResponseEntity updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentUpdateRequestDto requestDto) {
         Long userId = UserContext.userData.get().getUserId();
         commentService.updateComment(commentId, requestDto);
         return ResponseEntity.ok().body(ResponseDto.of("댓글 수정이 완료되었습니다."));

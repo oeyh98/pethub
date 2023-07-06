@@ -6,7 +6,7 @@ import ium.pethub.domain.entity.User;
 import ium.pethub.domain.repository.UserRepository;
 import ium.pethub.dto.user.request.UserJoinRequestDto;
 import ium.pethub.dto.user.request.UserLoginRequestDto;
-import ium.pethub.dto.user.response.UserLoginResponseDto;
+import ium.pethub.dto.user.response.UserResponseDto;
 import ium.pethub.dto.user.response.UserTokenResponseDto;
 import ium.pethub.exception.AlreadyExistException;
 import ium.pethub.util.AESEncryption;
@@ -67,7 +67,7 @@ public class UserService {
     //TODO: https, 도메인
     //TODO: 이미지 반환
     @Transactional
-    public UserLoginResponseDto login(UserLoginRequestDto requestDto) throws Exception {
+    public UserResponseDto login(UserLoginRequestDto requestDto) throws Exception {
         User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
 
@@ -75,8 +75,8 @@ public class UserService {
 
         UserTokenResponseDto token = tokenProvider(user);
 
-        UserLoginResponseDto responseDto =
-                UserLoginResponseDto.builder()
+        UserResponseDto responseDto =
+                UserResponseDto.builder()
                         .userId(user.getId())
                         .authTokenResponseDto(token)
                         .email(user.getEmail())
@@ -158,7 +158,8 @@ public class UserService {
                 .path("/")
                 .httpOnly(true)
                 .maxAge(REFRESH_EXPIRE)
-                .sameSite("Lax")
+                .sameSite("None")
+                .secure(true)
                 .build();
     }
 
@@ -169,12 +170,27 @@ public class UserService {
                 .path("/api/update-token")
                 .httpOnly(true)
                 .maxAge(REFRESH_EXPIRE)
-                .sameSite("Lax")
+                .sameSite("None")
+                .secure(true)
                 .build();
     }
 
     public void withdraw(Long userId) {
         User user = userRepository.findById(userId).get();
         user.withdraw();
+    }
+
+    //token??
+    public UserResponseDto getUserInfo(Long userId) {
+        User user = userRepository.findById(userId).get();
+        UserResponseDto responseDto = UserResponseDto.builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .userImage(user.getUserImage())
+                .role(user.getRole())
+                .build();
+        return responseDto;
     }
 }

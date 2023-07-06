@@ -17,6 +17,8 @@ public class UserJoinRequestDto {
 
     private String password;
 
+    private String nickname;
+
     private RoleType role;
 
     private String name;
@@ -26,6 +28,7 @@ public class UserJoinRequestDto {
     public User toEntity(RoleType role) {
         return User.builder()
                 .email(email)
+                .nickname(nickname)
                 .password(password)
                 .role(role)
                 .name(name)

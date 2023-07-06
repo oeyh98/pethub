@@ -4,7 +4,7 @@ package ium.pethub.controller;
 import ium.pethub.dto.common.ResponseDto;
 import ium.pethub.dto.user.request.UserJoinRequestDto;
 import ium.pethub.dto.user.request.UserLoginRequestDto;
-import ium.pethub.dto.user.response.UserLoginResponseDto;
+import ium.pethub.dto.user.response.UserResponseDto;
 import ium.pethub.dto.user.response.UserTokenResponseDto;
 import ium.pethub.service.UserService;
 import ium.pethub.util.AuthCheck;
@@ -55,7 +55,7 @@ public class UserController {
     //TODO: 반환처리
     @PostMapping("/api/user/login")
     public ResponseEntity<Object> login(@RequestBody UserLoginRequestDto request) throws Exception {
-        UserLoginResponseDto responseDto = userService.login(request);
+        UserResponseDto responseDto = userService.login(request);
 
         ResponseCookie AccessToken = userService.getAccessTokenCookie(
                 responseDto.getAuthTokenResponseDto().getACCESS_TOKEN());
@@ -119,5 +119,17 @@ public class UserController {
         userService.withdraw(UserContext.userData.get().getUserId());
 
         return ResponseEntity.ok().body(new ResponseDto("회원이 탈퇴되었습니다."));
+    }
+
+    @ValidToken
+    @GetMapping("/api/user/info")
+    public ResponseEntity<?> getUserInfo(){
+        return ResponseEntity.ok().body(userService.getUserInfo(UserContext.userData.get().getUserId()));
+    }
+
+    @ValidToken
+    @GetMapping("/api/user/info/{userId}")
+    public ResponseEntity<?> getUserInfoById(@PathVariable("userId") Long userId){
+        return ResponseEntity.ok().body(userService.getUserInfo(userId));
     }
 }

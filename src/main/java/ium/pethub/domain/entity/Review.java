@@ -1,7 +1,7 @@
 package ium.pethub.domain.entity;
 
+
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,23 +10,19 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Follow {
+
+public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, name = "review_id")
     private Long id;
-
-    @JoinColumn(name = "owner_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Owner owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vet_id")
     private Vet vet;
 
-    @Builder
-    public Follow(Owner fromFollow, Vet toFollow) {
-        this.owner = fromFollow;
-        this.vet = toFollow;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id",nullable = false)
+    private Owner owner;
 }

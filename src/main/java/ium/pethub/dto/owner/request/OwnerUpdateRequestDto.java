@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 public class OwnerUpdateRequestDto {
-    private String nickname;
     private String ownerImage;
     private LocalDate birth;
     private String address;
