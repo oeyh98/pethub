@@ -28,13 +28,13 @@ public class ReviewController {
     public ResponseEntity<?> updateReview(@PathVariable Long vetId, @PathVariable Long reviewId, ReviewUpdateRequestDto requestDto) throws Exception {
         //TODO:검증
         Long ownerId = UserContext.userData.get().getUserId();
-        reviewService.updateReview(vetId, requestDto);
+        reviewService.updateReview(vetId,reviewId, requestDto);
         return ResponseEntity.ok().body("리뷰 수정이 완료되었습니다.");
     }
 
     @DeleteMapping("/api/vet/{vetId}/review/{reviewId}")
     public ResponseEntity<?> deleteReview(@PathVariable Long vetId, @PathVariable Long reviewId) throws Exception {
-        reviewService.deleteReview(reviewId);
+        reviewService.deleteReview(vetId, reviewId);
         return ResponseEntity.ok().body("리뷰 삭제가 완료되었습니다.");
     }
 }

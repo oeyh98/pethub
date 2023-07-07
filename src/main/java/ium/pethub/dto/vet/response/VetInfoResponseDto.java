@@ -1,10 +1,12 @@
 package ium.pethub.dto.vet.response;
 
+import ium.pethub.domain.entity.Review;
 import ium.pethub.domain.entity.User;
 import ium.pethub.domain.entity.Vet;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class VetInfoResponseDto {
@@ -21,7 +23,7 @@ public class VetInfoResponseDto {
     private String career;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
+    private List<Review> reviewList;
     public VetInfoResponseDto(Vet vet){
         User user = vet.getUser();
         this.userId = user.getId();
@@ -37,5 +39,6 @@ public class VetInfoResponseDto {
         this.career = vet.getCareer();
         this.createdAt = vet.getCreatedAt();
         this.modifiedAt = vet.getModifiedAt();
+        this.reviewList = vet.getReviewList();
     }
 }

@@ -33,6 +33,8 @@ public class Vet extends BaseTimeEntity{
     private List<Follow> followers = new ArrayList<>();
     @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>();
+    @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
+    private List<Review> reviewList = new ArrayList<>();
 
     @Builder
     public Vet(User user) {
@@ -47,5 +49,9 @@ public class Vet extends BaseTimeEntity{
         this.career = requestDto.getCareer();
 
         this.user.updateUserImage(requestDto.getVetImage());
+    }
+
+    public void updateRating(int rating){
+        this.rating = rating;
     }
 }

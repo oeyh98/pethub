@@ -10,6 +10,9 @@ import ium.pethub.dto.review.ReviewSaveRequestDto;
 import ium.pethub.dto.review.ReviewUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +21,7 @@ public class ReviewService {
     private final VetRepository vetRepository;
     private final OwnerRepository ownerRepository;
 
+    @Transactional
     public Long addReview(Long ownerId, Long vetId, ReviewSaveRequestDto requestDto) throws Exception {
         Vet vet = vetRepository.findById(vetId)
                 .orElseThrow(() -> new Exception("존재하지 않는 수의사입니다."));
@@ -25,18 +29,40 @@ public class ReviewService {
                 .orElseThrow(() -> new Exception("존재하지 않는 유저입니다."));
         Review review = requestDto.toEntity(owner, vet);
         reviewRepository.save(review);
+        updateRatingForVet(vet);
         return review.getId();
     }
 
-    public void updateReview(Long reviewId, ReviewUpdateRequestDto requestDto) throws Exception {
+    @Transactional
+    public void updateReview(Long vetId, Long reviewId, ReviewUpdateRequestDto requestDto) throws Exception {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new Exception("존재하지 않는 리뷰입니다."));
+        Vet vet = vetRepository.findById(vetId)
+                .orElseThrow(() -> new Exception("존재하지 않는 수의사입니다."));
         review.update(requestDto);
+        updateRatingForVet(vet);
     }
 
-    public void deleteReview(Long reviewId) throws Exception {
+    @Transactional
+    public void deleteReview(Long vetId, Long reviewId) throws Exception {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new Exception("존재하지 않는 리뷰입니다."));
+        Vet vet = vetRepository.findById(vetId)
+                .orElseThrow(() -> new Exception("존재하지 않는 수의사입니다."));
+
         reviewRepository.delete(review);
+        updateRatingForVet(vet);
+    }
+    @Transactional
+    public void updateRatingForVet(Vet vet) throws Exception {
+        List<Review> reviewList = vet.getReviewList();
+        if (reviewList.isEmpty()) {
+            vet.updateRating(0);
+        } else {
+            int totalRating = reviewList.stream().mapToInt(Review::getRating).sum();
+            int newRating = totalRating / reviewList.size();
+
+            vet.updateRating(newRating);
+        }
     }
 }
