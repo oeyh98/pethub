@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Vet extends BaseTimeEntity{
+public class Vet extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +30,10 @@ public class Vet extends BaseTimeEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
-    private List<Follow> followers = new ArrayList<>();
-    @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
+    // 조훈창-추가
+    // @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
+    // private List<Follow> followers = new ArrayList<>();
+    @OneToMany(mappedBy = "vet", fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>();
 
     @Builder
@@ -40,7 +41,7 @@ public class Vet extends BaseTimeEntity{
         this.user = user;
     }
 
-    public void update(VetUpdateRequestDto requestDto){
+    public void update(VetUpdateRequestDto requestDto) {
         this.vetImage = requestDto.getVetImage();
         this.introduction = requestDto.getIntroduction();
         this.address = requestDto.getAddress();

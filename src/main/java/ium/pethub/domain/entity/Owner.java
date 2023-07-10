@@ -34,14 +34,15 @@ public class Owner extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "owner",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     private List<Post> postList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     private List<Pet> petList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "following", fetch = FetchType.LAZY)
-    private List<Follow> followings = new ArrayList<>();
+    // 조훈창-추가
+    // @OneToMany(mappedBy = "following", fetch = FetchType.LAZY)
+    // private List<Follow> followings = new ArrayList<>();
 
     @Builder
     public Owner(User user, String nickname) {
@@ -55,7 +56,6 @@ public class Owner extends BaseTimeEntity {
         this.birth = requestDto.getBirth();
         this.address = requestDto.getAddress();
     }
-
 
     public void setOwnerImage(String ownerImage) {
         this.ownerImage = ownerImage;
