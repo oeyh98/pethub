@@ -1,6 +1,27 @@
 package ium.pethub.controller;
 
 
+import static ium.pethub.util.AuthConstants.EMAIL;
+import static ium.pethub.util.AuthConstants.NICKNAME;
+import static ium.pethub.util.AuthConstants.PASSWORD;
+import static ium.pethub.util.AuthConstants.REFRESH_TOKEN;
+import static ium.pethub.util.AuthConstants.NEW_PASSWORD;
+
+import java.io.IOException;
+import java.util.Map;
+
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import ium.pethub.dto.common.ResponseDto;
 import ium.pethub.dto.user.request.UserJoinRequestDto;
 import ium.pethub.dto.user.request.UserLoginRequestDto;
@@ -11,22 +32,19 @@ import ium.pethub.util.AuthCheck;
 import ium.pethub.util.UserContext;
 import ium.pethub.util.ValidToken;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-
-import static ium.pethub.util.AuthConstants.*;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
     private final UserService userService;
 
-    //TODO:getUserInfoById(nickname, email)
-    //samesite none, secure true 설정
-    //
+    // 조훈창- 수정
+    // 닉네임 중복 검사를 위한 method
+    @PostMapping("/api/user/duplicate-nickname")
+    public ResponseEntity<Object> duplicateNickname(@RequestBody Map<String, String> nickname) {
+        userService.duplicateNickname( nickname.get(NICKNAME));
+        return ResponseEntity.ok().body(ResponseDto.of("사용 가능한 닉네임입니다"));
+    }
     @PostMapping("/api/user/duplicate-email")
     public ResponseEntity<Object> duplicateEmail(@RequestBody Map<String, String> email) {
         String mail = email.get(EMAIL);
@@ -70,14 +88,16 @@ public class UserController {
                         responseDto));
     }
 
+    // 조훈창 - 수정
+    // 쿠키 속성 추가 : sameSite, secure httpOnly
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.OWNER)
     @PostMapping("/api/user/logout")
     public ResponseEntity<Object> logout() {
         userService.removeRefreshToken(UserContext.userData.get().getUserId());
         return ResponseEntity.ok()
-                .header("Set-Cookie", "ACCESS_TOKEN=; path=/; max-age=0; expires=0;")
-                .header("Set-Cookie", "REFRESH_TOKEN=; path=/updateToken; max-age=0; expires=0;")
+                .header("Set-Cookie", "ACCESS_TOKEN=; path=/; max-age=0; expires=0; sameSite=None; secure=true; httpOnly=true;")
+                .header("Set-Cookie", "REFRESH_TOKEN=; path=/updateToken; max-age=0; expires=0; sameSite=None; secure=true; httpOnly=true;")
                 .body(ResponseDto.of(
                         "로그아웃 성공")
                 );
@@ -92,12 +112,25 @@ public class UserController {
         ));
     }
 
+    //조훈창 - 수정
+    // 메소드 파라미터 수정
     @ValidToken
     @PutMapping("/api/user/change-pw")
     public ResponseEntity<?> changePassword(@RequestBody Map<String, String> password) throws Exception {
-        userService.updatePassword(UserContext.userData.get().getUserId(), password.get(PASSWORD));
+        userService.updatePassword(UserContext.userData.get().getUserId(),password.get(PASSWORD), password.get(NEW_PASSWORD));
         return ResponseEntity.ok().body(ResponseDto.of(
                 "비밀번호 변경에 성공하였습니다."
+        ));
+    }
+
+    //조훈창 - 수정
+    // 닉네임 변경 추가
+    @ValidToken
+    @PutMapping("/api/user/change-nickname")
+    public ResponseEntity<?> changeNickname(@RequestBody Map<String, String> nickname) throws Exception {
+        userService.updateNickname(UserContext.userData.get().getUserId(),nickname.get(NICKNAME));
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "닉네임 변경에 성공하였습니다."
         ));
     }
 
@@ -117,7 +150,6 @@ public class UserController {
     @PostMapping("/api/user/withdraw")
     public ResponseEntity withdraw(){
         userService.withdraw(UserContext.userData.get().getUserId());
-
         return ResponseEntity.ok().body(new ResponseDto("회원이 탈퇴되었습니다."));
     }
 
@@ -131,5 +163,14 @@ public class UserController {
     @GetMapping("/api/user/info/{userId}")
     public ResponseEntity<?> getUserInfoById(@PathVariable("userId") Long userId){
         return ResponseEntity.ok().body(userService.getUserInfo(userId));
+    }
+
+
+    // 조훈창 - 수정
+    // OWNER 에 있는 이미지 업로드 이동
+    @ValidToken
+    @PostMapping("/api/user/image")
+    public ResponseEntity<?> uploadUserImage(@RequestParam("photo") MultipartFile imageFile) throws IOException {
+       return ResponseEntity.ok().body(userService.uploadUserImage(imageFile,UserContext.userData.get().getUserId()));
     }
 }

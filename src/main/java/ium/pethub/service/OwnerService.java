@@ -27,7 +27,10 @@ public class OwnerService {
 
     @Transactional
     public void ownerJoin(User user) throws Exception {
-        Owner owner = new Owner(user, user.getName()+user.getId());
+        //조훈창 - 수정
+        // 생자자 없음
+        // Owner owner = new Owner(user, user.getName()+user.getId());
+        Owner owner = new Owner(user);
         ownerRepository.save(owner);
     }
 
@@ -38,12 +41,14 @@ public class OwnerService {
         return new OwnerInfoResponseDto(owner);
     }
 
-    @Transactional(readOnly = true)
-    public OwnerInfoResponseDto getOwnerByNickname(String nickname){
-        Owner owner = ownerRepository.findByNickname(nickname)
-                .orElseThrow(()-> new EntityNotFoundException("유저를 찾을 수 없습니다."));
-        return new OwnerInfoResponseDto(owner);
-    }
+    // 조훈창 - 수정
+    // Owner에 nickname 없음
+    // @Transactional(readOnly = true)
+    // public OwnerInfoResponseDto getOwnerByNickname(String nickname){
+    //     Owner owner = ownerRepository.findByNickname(nickname)
+    //             .orElseThrow(()-> new EntityNotFoundException("유저를 찾을 수 없습니다."));
+    //     return new OwnerInfoResponseDto(owner);
+    // }
 
 
     public void updateOwner(Long userId, OwnerUpdateRequestDto requestDto) {
@@ -51,6 +56,9 @@ public class OwnerService {
         owner.update(requestDto);
     }
 
+
+    // 조훈창 수정
+    // User Service로 이동 시키는게 어떤가함 
     public Map<String,String> uploadOwnerImage(MultipartFile imageFile, Long userId) throws IOException {
         byte[] imageData = imageFile.getBytes();
         UUID uuid = UUID.randomUUID();
@@ -65,7 +73,11 @@ public class OwnerService {
 
 
         Owner owner = ownerRepository.findByUserId(userId).get();
-        owner.setOwnerImage(imagePath.get("img"));
+
+        // 조훈창 수정
+        // owner set Owner이이미지 없음
+        // owner.setOwnerImage(imagePath.get("img"));
+        owner.getUser().updateUserImage(imagePath.get("img"));
 
         return imagePath;
     }

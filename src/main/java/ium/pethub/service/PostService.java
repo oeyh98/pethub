@@ -55,13 +55,15 @@ public class PostService {
         return getPostListResponseDto(owner.getId(), page);
     }
 
-    @Transactional(readOnly = true)
-    public Page<PostListResponseDto> findPostsByNickname(String nickname, int page){
-        Owner owner = ownerRepository.findByNickname(nickname).orElseThrow(
-                () -> new EntityNotFoundException("회원이 존재하지 않습니다. nickname=" + nickname));
+    // 조훈창 - 수정
+    // Owner에 nickname 없음
+    // @Transactional(readOnly = true)
+    // public Page<PostListResponseDto> findPostsByNickname(String nickname, int page){
+    //     Owner owner = ownerRepository.findByNickname(nickname).orElseThrow(
+    //             () -> new EntityNotFoundException("회원이 존재하지 않습니다. nickname=" + nickname));
 
-        return getPostListResponseDto(owner.getId(), page);
-    }
+    //     return getPostListResponseDto(owner.getId(), page);
+    // }
 
     @Transactional(readOnly = true)
     Page<PostListResponseDto> getPostListResponseDto(Long ownerId, int page) {
