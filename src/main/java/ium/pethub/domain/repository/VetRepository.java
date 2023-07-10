@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface VetRepository extends JpaRepository<Vet, Long> {
     Optional<Vet> findByUserId(Long userId);
+    Optional<Vet> findByUserNickname(String nickname);
 }

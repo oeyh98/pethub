@@ -1,13 +1,19 @@
 package ium.pethub.dto.vet.response;
 
-import ium.pethub.domain.entity.Vet;
+import ium.pethub.domain.entity.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class VetInfoResponseDto {
+    private Long userId;
+    private String name;
+    private String nickname;
     private String vetImage;
+
+    private Long vetId;
     private String introduction;
     private String address;
     private String clinicHour;
@@ -16,8 +22,17 @@ public class VetInfoResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
+    private List<Comment> commentList;
+    private List<Follow> followers;
+    private List<Review> reviewList;
     public VetInfoResponseDto(Vet vet){
-        this.vetImage = vet.getVetImage();
+        User user = vet.getUser();
+        this.userId = user.getId();
+        this.name = user.getName();
+        this.nickname = user.getNickname();
+        this.vetImage = user.getUserImage();
+
+        this.vetId = vet.getId();
         this.introduction = vet.getIntroduction();
         this.address = vet.getAddress();
         this.clinicHour = vet.getClinicHour();
@@ -25,5 +40,9 @@ public class VetInfoResponseDto {
         this.career = vet.getCareer();
         this.createdAt = vet.getCreatedAt();
         this.modifiedAt = vet.getModifiedAt();
+
+        this.commentList = vet.getCommentList();
+        this.followers = vet.getFollowers();
+        this.reviewList = vet.getReviewList();
     }
 }

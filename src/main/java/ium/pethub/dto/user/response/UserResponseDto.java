@@ -6,11 +6,12 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class UserLoginResponseDto {
+public class UserResponseDto {
     private Long userId;
     private UserTokenResponseDto authTokenResponseDto;
     private String email;
     private String name;
+    private String nickname;
     private String userImage;
     private RoleType role;
 }

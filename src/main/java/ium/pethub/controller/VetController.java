@@ -10,11 +10,10 @@ import ium.pethub.util.UserContext;
 import ium.pethub.util.ValidToken;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,9 +36,17 @@ public class VetController {
     }
 
     @ValidToken
+    @GetMapping("/api/vet/nickname")
+    public ResponseEntity<?> getOwnerInfoByNickname(@RequestParam("nickname") String nickname) {
+        return ResponseEntity.ok()
+                .body(ResponseDto.of(HttpStatus.OK, vetService.getVetByNickname(nickname)));
+    }
+
+
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.VET)
     @PutMapping("api/vet")
-    public ResponseEntity updateVet(VetUpdateRequestDto requestDto){
+    public ResponseEntity updateVet(@RequestBody VetUpdateRequestDto requestDto){
         Long vetId = UserContext.userData.get().getUserId();
         vetService.vetUpdate(vetId, requestDto);
         return ResponseEntity.ok().body(ResponseDto.of("수의사 정보 수정에 성공하였습니다"));

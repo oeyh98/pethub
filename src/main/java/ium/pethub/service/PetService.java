@@ -57,16 +57,18 @@ public class PetService {
                 .collect(Collectors.toList());
     }
 
-    public List<PetListResponseDto> findPetListByNickname(String nickname) {
-        Owner owner = ownerRepository.findByNickname(nickname)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. nickname=" + nickname));
+    // 조훈창 - 수정
+    // Owner에 nickname 없음
+    // public List<PetListResponseDto> findPetListByNickname(String nickname) {
+    //     Owner owner = ownerRepository.findByNickname(nickname)
+    //             .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. nickname=" + nickname));
 
-        List<Pet> petList = petRepository.findAllByOwner(owner);
+    //     List<Pet> petList = petRepository.findAllByOwner(owner);
 
-        return petList.stream()
-                .map(pet -> new PetListResponseDto(pet.getId(), pet.getName(), pet.getImage()))
-                .collect(Collectors.toList());
-    }
+    //     return petList.stream()
+    //             .map(pet -> new PetListResponseDto(pet.getId(), pet.getName(), pet.getImage()))
+    //             .collect(Collectors.toList());
+    // }
 
     //TODO: 펫 주인 확인 필요
     public void updatePet(Long petId, PetRequestDto requestDto) {

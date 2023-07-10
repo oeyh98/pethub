@@ -24,8 +24,6 @@ public class Follow {
     @JoinColumn(name = "vet_id")
     private Vet vet;
 
-
-
     @Builder
     public Follow(Owner fromFollow, Vet toFollow) {
         this.owner = fromFollow;

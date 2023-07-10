@@ -19,7 +19,6 @@ public class Vet extends BaseTimeEntity {
     @Column(nullable = false, name = "vet_id")
     private Long id;
 
-    private String vetImage;
     private String introduction;
     private String address;
     private String clinicHour;
@@ -30,23 +29,29 @@ public class Vet extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // 조훈창-추가
-    // @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
-    // private List<Follow> followers = new ArrayList<>();
     @OneToMany(mappedBy = "vet", fetch = FetchType.LAZY)
+    private List<Follow> followers = new ArrayList<>();
+    @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>();
+    @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
+    private List<Review> reviewList = new ArrayList<>();
 
     @Builder
     public Vet(User user) {
         this.user = user;
     }
 
-    public void update(VetUpdateRequestDto requestDto) {
-        this.vetImage = requestDto.getVetImage();
+    public void update(VetUpdateRequestDto requestDto){
         this.introduction = requestDto.getIntroduction();
         this.address = requestDto.getAddress();
         this.clinicHour = requestDto.getClinicHour();
         this.rating = requestDto.getRating();
         this.career = requestDto.getCareer();
+
+        this.user.updateUserImage(requestDto.getVetImage());
+    }
+
+    public void updateRating(int rating){
+        this.rating = rating;
     }
 }

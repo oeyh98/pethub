@@ -1,5 +1,6 @@
 package ium.pethub.dto.post.response;
 import ium.pethub.domain.entity.Post;
+import ium.pethub.dto.comment.response.CommentResponseDto;
 import ium.pethub.dto.owner.response.OwnerResponseDto;
 import lombok.Getter;
 
@@ -16,6 +17,7 @@ public class PostResponseDto {
     private String content;
     private LocalDateTime createdAt;
 
+    private List<CommentResponseDto> commentList;
     private OwnerResponseDto ownerInfo;
 
 
@@ -27,6 +29,9 @@ public class PostResponseDto {
         this.thumbnail = post.getThumbnail();
         this.createdAt = post.getCreatedAt();
 
+        this.commentList = post.getCommentList().stream()
+                .map(CommentResponseDto::new)
+                .collect(Collectors.toList());
         this.ownerInfo = new OwnerResponseDto(post.getOwner());
 
     }

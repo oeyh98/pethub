@@ -26,6 +26,10 @@ public class User extends BaseTimeEntity{
     @Column(nullable = false)
     private String name;
 
+    private String nickname;
+
+    private String userImage;
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -51,12 +55,14 @@ public class User extends BaseTimeEntity{
     private Vet vet;
 
     @Builder
-    public User(RoleType role, String name, String email, String password, String callNumber) {
+    public User(RoleType role, String name, String nickname, String email, String password, String callNumber, String userImage) {
         this.name = name;
+        this.nickname = nickname;
         this.role = role;
         this.email = email;
         this.password = password;
         this.callNumber = callNumber;
+        this.userImage = userImage;
     }
 
 
@@ -81,6 +87,9 @@ public class User extends BaseTimeEntity{
         this.password = encryptedPassword;
     }
 
+    public void updateNickname(String nickname){this.nickname = nickname;}
+
+    public void updateUserImage(String userImage){this.userImage = userImage;}
     public void withdraw() {
         this.withdrawYn = 1;
         this.withdrawAt = LocalDateTime.now();
