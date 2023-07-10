@@ -35,12 +35,14 @@ public class OwnerController {
     //TODO: 펫정보, 게시물 정보 한번에 가져오도록 변경해야함
     //유저 조회
     //본인 이외의 유저 조회시 닉네임 이용
-    @ValidToken
-    @GetMapping("/api/owner/nickname")
-    public ResponseEntity<?> getOwnerInfoByNickname(@RequestParam("nickname") String nickname) {
-        return ResponseEntity.ok()
-                .body(ResponseDto.of(HttpStatus.OK, ownerService.getOwnerByNickname(nickname)));
-    }
+    // 조훈창 - 수정
+    // Owner에 nickname 없음
+    // @ValidToken
+    // @GetMapping("/api/owner/nickname")
+    // public ResponseEntity<?> getOwnerInfoByNickname(@RequestParam("nickname") String nickname) {
+    //     return ResponseEntity.ok()
+    //             .body(ResponseDto.of(HttpStatus.OK, ownerService.getOwnerByNickname(nickname)));
+    // }
 
     //전체 회원 조회는 불필요하다고 판단
 
@@ -54,11 +56,14 @@ public class OwnerController {
         return ResponseEntity.ok().build();
     }
 
-    @ValidToken
-    @AuthCheck(role = AuthCheck.Role.OWNER)
-    @PostMapping("/api/owner/image")
-    public ResponseEntity<?> uploadOwnerImage(@RequestParam("photo") MultipartFile imageFile) throws IOException {
-       return ResponseEntity.ok().body(ownerService.uploadOwnerImage(imageFile,UserContext.userData.get().getUserId()));
-    }
+
+    // 조훈창 - 수정
+    // User controller 로 이동 시키는게 어떤가 함
+    // @ValidToken
+    // @AuthCheck(role = AuthCheck.Role.OWNER)
+    // @PostMapping("/api/owner/image")
+    // public ResponseEntity<?> uploadOwnerImage(@RequestParam("photo") MultipartFile imageFile) throws IOException {
+    //    return ResponseEntity.ok().body(ownerService.uploadOwnerImage(imageFile,UserContext.userData.get().getUserId()));
+    // }
 
 }

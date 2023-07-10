@@ -57,11 +57,13 @@ public class PostController {
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, postList));
     }
 
-    @GetMapping("/posts/nickname/{nickname}/{page}")
-    public ResponseEntity<?> findPostsByNickname(@PathVariable String nickname, @PathVariable int page){
-        Page<PostListResponseDto> postList = postService.findPostsByNickname(nickname, page);
-        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, postList));
-    }
+    // 조훈창 - 수정
+    // Owner에 nickname 없음
+    // @GetMapping("/posts/nickname/{nickname}/{page}")
+    // public ResponseEntity<?> findPostsByNickname(@PathVariable String nickname, @PathVariable int page){
+    //     Page<PostListResponseDto> postList = postService.findPostsByNickname(nickname, page);
+    //     return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, postList));
+    // }
 
     //TODO: 아이디 검증
     @ValidToken

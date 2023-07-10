@@ -70,16 +70,18 @@ public class PetController {
         return ResponseEntity.ok().body(ResponseDto.of("펫 리스트 조회에 성공하였습니다", responseDto));
     }
 
+    // 조훈창 - 수정
+    // Owner에 nickname 없음
     // 펫 리스트 조회
     // nickname
     //TODO: 소셜로그인
-    @ValidToken
-    @AuthCheck(role = AuthCheck.Role.OWNER)
-    @GetMapping("/api/pet/nickname")
-    public ResponseEntity<Object> getPetList(@RequestBody Map<String, String> nickname) {
-        List<PetListResponseDto> responseDto = petService.findPetListByNickname(nickname.get("nickname"));
-        return ResponseEntity.ok().body(ResponseDto.of("펫 리스트 조회에 성공하였습니다", responseDto));
-    }
+    // @ValidToken
+    // @AuthCheck(role = AuthCheck.Role.OWNER)
+    // @GetMapping("/api/pet/nickname")
+    // public ResponseEntity<Object> getPetList(@RequestBody Map<String, String> nickname) {
+    //     List<PetListResponseDto> responseDto = petService.findPetListByNickname(nickname.get("nickname"));
+    //     return ResponseEntity.ok().body(ResponseDto.of("펫 리스트 조회에 성공하였습니다", responseDto));
+    // }
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.OWNER)
