@@ -19,7 +19,7 @@ import java.util.Map;
 public class CommentController {
     private final CommentService commentService;
 
-    //requstBody
+    // requstBody
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.VET)
     @PostMapping("api/post/{postId}/comment")
