@@ -62,11 +62,13 @@ public class ChatRoomQueryRepository extends QuerydslRepositorySupport {
                         )).orderBy(chat.createdAt.desc())
                 .limit(1);
 
+        // 조훈창 수정 - > userImage 추가, nickname -> name으로 변경
         return queryFactory
                 .select(Projections.bean(ChatRoomResponseDto.class,
                         chatRoom.id.as("chatRoomId"),
                         user.id.as("partnerId"),
                         user.name,
+                        user.userImage,
                         ExpressionUtils.as(unReadMsgCntSubQuery, "unReadMsgCnt"),
                         ExpressionUtils.as(lastMessageSubQuery, "lastMessage"),
                         ExpressionUtils.as(lastMessageTimeSubQuery, "lastMessageTime")
