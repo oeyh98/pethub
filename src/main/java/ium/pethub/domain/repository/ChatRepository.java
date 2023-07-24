@@ -8,7 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ChatRepository extends JpaRepository<Chat,Long> {
+// Id Long 에서 String 으로 변경
+public interface ChatRepository extends JpaRepository<Chat,String> {
 
 //    @Query("select c from Chat c join fetch c.chatRoom cr where cr.id =:roomId and c.state =false")
 //    List<Chat> findByChatRoom(@Param("roomId") Long roomId);

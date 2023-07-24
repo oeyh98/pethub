@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +53,7 @@ public class ChatService {
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
         ChatRoom chatRoom = getChatRoom(chat.getSenderId(), chat.getRecipientId());
         Chat chatMessage = Chat.builder().id(chat.getChatId()).chatRoom(chatRoom).senderId(chat.getSenderId()).recipientId(chat.getRecipientId()).content(chat.getContent()).state(false).build();
+        System.out.println(chatMessage.getId());
         Chat chatResponse = chatRepository.save(chatMessage);
         return new ChatResponseDto(chatResponse);
     }
@@ -59,8 +61,10 @@ public class ChatService {
     public ChatMessageListResponseDto getChatList(Long roomId) {
         Long userId = UserContext.userData.get().getUserId();
         chatRepository.updateStateByRoomIdAndUserId(roomId, userId);
+
+        // 조훈창 수정 -> Stream Error 발생으로 collect 추가
         List<ChatMessageDto> chatMessageDtoList = (List<ChatMessageDto>) chatRepository.findAllByChatRoomId(roomId)
-                .stream().map(ChatMessageDto::new);
+                .stream().map(ChatMessageDto::new).collect(Collectors.toList());
         User partner = userRepository.findPartnerByRoomIdAndUserId(roomId, userId);
         return new ChatMessageListResponseDto(partner, chatMessageDtoList);
     }

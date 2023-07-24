@@ -45,6 +45,11 @@ public class ChatTypeUtils {
         if (userSocketList.get(chat.getRecipientId()) != null) {
              userSocketList.get(chat.getRecipientId()).sendMessage(new TextMessage(objectMapper.writeValueAsString(responseDto)));
         }
+
+        // 조훈창 수정 -> 메세지 보낸 사람에게도 같은 내용을 보내줌 , 이유: 클라이언트에서 보낸 메세지가 정상적으로 송수신 되었는지에 대한 판단 여부를 서버측의 오류가 없으면 정상으로 인시하고, 서버가 수신한 내용을 클라이언트측에 보내 줌으로서 다시 표시한다.
+        if (userSocketList.get(chat.getSenderId()) != null) {
+             userSocketList.get(chat.getSenderId()).sendMessage(new TextMessage(objectMapper.writeValueAsString(responseDto)));
+        }
     }
 
     public void ACKTypeProcess(String payload,Map<Long, WebSocketSession> userSocketList) throws IOException {

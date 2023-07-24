@@ -1,9 +1,7 @@
 package ium.pethub.controller;
-import ium.pethub.dto.common.ResponseDto;
-import ium.pethub.service.ChatService;
-import ium.pethub.util.UserContext;
-import ium.pethub.util.ValidToken;
-import lombok.RequiredArgsConstructor;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,8 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
+import ium.pethub.domain.entity.ChatRoom;
+import ium.pethub.dto.common.ResponseDto;
+import ium.pethub.service.ChatService;
+import ium.pethub.util.UserContext;
+import ium.pethub.util.ValidToken;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,12 +51,16 @@ public class ChatController {
         ));
     }
 
+    // 조훈창 - 수정
+    // targetId에 해당하는 채팅방이 있으면 roomId도 반환
     @ValidToken
     @GetMapping("/api/exist/chat/{targetId}")
     public ResponseEntity<?> existChatRoom(@PathVariable Long targetId) {
-        Map<String, Boolean> response = new HashMap<>();
-        if (chatService.getChatRoom(UserContext.userData.get().getUserId(), targetId) != null) {
+        Map<String, Object> response = new HashMap<>();
+        ChatRoom chatRoom = chatService.getChatRoom(UserContext.userData.get().getUserId(), targetId);
+        if (chatRoom != null) {
             response.put("status", true);
+            response.put("roomId",chatRoom.getId());
             return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, response));
         }
         response.put("status", false);
