@@ -83,5 +83,4 @@ public class ChatService {
     public boolean existChatMessage(Long userId) {
         return chatRepository.findByChatMessage(userId) != null;
     }
-
 }

@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 public class VetUpdateRequestDto {
     private String vetImage;
     private String introduction;
+    private String hosName;
     private String address;
-    private String clinicHour;
+    private String openHour;
+    private String closeHour;
     private int rating;
     private String career;
 }

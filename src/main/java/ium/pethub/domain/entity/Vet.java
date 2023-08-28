@@ -20,8 +20,10 @@ public class Vet extends BaseTimeEntity {
     private Long id;
 
     private String introduction;
+    private String hosName;
     private String address;
-    private String clinicHour;
+    private String openHour;
+    private String closeHour;
     private int rating;
     private String career;
 
@@ -43,8 +45,10 @@ public class Vet extends BaseTimeEntity {
 
     public void update(VetUpdateRequestDto requestDto){
         this.introduction = requestDto.getIntroduction();
+        this.hosName = requestDto.getHosName();
         this.address = requestDto.getAddress();
-        this.clinicHour = requestDto.getClinicHour();
+        this.openHour = requestDto.getOpenHour();
+        this.closeHour = requestDto.getCloseHour();
         this.rating = requestDto.getRating();
         this.career = requestDto.getCareer();
 
