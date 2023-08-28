@@ -15,8 +15,10 @@ public class VetInfoResponseDto {
 
     private Long vetId;
     private String introduction;
+    private String hosName;
     private String address;
-    private String clinicHour;
+    private String openHour;
+    private String closeHour;
     private int rating;
     private String career;
     private LocalDateTime createdAt;
@@ -34,8 +36,10 @@ public class VetInfoResponseDto {
 
         this.vetId = vet.getId();
         this.introduction = vet.getIntroduction();
+        this.hosName = vet.getHosName();
         this.address = vet.getAddress();
-        this.clinicHour = vet.getClinicHour();
+        this.openHour = vet.getOpenHour();
+        this.closeHour = vet.getCloseHour();
         this.rating = vet.getRating();
         this.career = vet.getCareer();
         this.createdAt = vet.getCreatedAt();
