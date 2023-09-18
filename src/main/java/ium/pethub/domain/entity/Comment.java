@@ -1,22 +1,41 @@
 package ium.pethub.domain.entity;
 
+import ium.pethub.dto.comment.request.CommentUpdateRequestDto;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Comment {
+@NoArgsConstructor(access=AccessLevel.PROTECTED)
+@Getter
+public class Comment extends BaseTimeEntity{
 
     @Id
+    @Column(name="comment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id", insertable = false, updatable = false)
-    private Long id;
+    Long id;
+
+    String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",nullable = false)
-    private User user;
+    @JoinColumn(name = "post_id", nullable = false)
+    Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vet_id", nullable = false)
+    Vet vet;
+
+    @Builder
+    public Comment(String content, Post post, Vet vet){
+        this.content = content;
+        this.post = post;
+        this.vet = vet;
+    }
+
+    public void update(CommentUpdateRequestDto requestDto){
+        this.content = requestDto.getContent();
+    }
 }

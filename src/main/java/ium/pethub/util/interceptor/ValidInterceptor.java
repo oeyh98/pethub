@@ -1,6 +1,6 @@
 package ium.pethub.util.interceptor;
 
-import ium.pethub.util.JwtTokenProvider;
+import ium.pethub.util.TokenProvider;
 import ium.pethub.util.UserContext;
 import ium.pethub.util.ValidToken;
 import ium.pethub.util.ValidTokenProcess;
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ValidInterceptor implements Ordered, HandlerInterceptor {
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private TokenProvider TokenProvider;
 
 
     @Override
@@ -37,7 +37,7 @@ public class ValidInterceptor implements Ordered, HandlerInterceptor {
             return true;
         }
 
-        return ValidTokenProcess.execute(req,res,jwtTokenProvider);
+        return ValidTokenProcess.execute(req,res,TokenProvider);
     }
 
     @Override

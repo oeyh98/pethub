@@ -11,11 +11,8 @@ public @interface AuthCheck {
     Role role();
 
     enum Role {
-        USER(1),
-        ADMIN(2),
-        VET(3);
-
-
+        OWNER(1),
+        VET(2);
         private final int level;
 
         Role(int level) {
