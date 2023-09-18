@@ -4,6 +4,9 @@ import ium.pethub.dto.post.request.PostUpdateRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +29,7 @@ public class Post extends BaseTimeEntity{
     private String content;
     private String thumbnail;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>();
     @Builder
