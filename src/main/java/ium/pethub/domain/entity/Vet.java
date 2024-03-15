@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "vet")
 public class Vet extends BaseTimeEntity {
 
     @Id

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @NoArgsConstructor(access=AccessLevel.PROTECTED)
 @Getter
+@Table(name = "comment")
 public class Comment extends BaseTimeEntity{
 
     @Id
@@ -32,11 +33,16 @@ public class Comment extends BaseTimeEntity{
     @JoinColumn(name = "vet_id", nullable = false)
     Vet vet;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
     @Builder
-    public Comment(String content, Post post, Vet vet){
+    public Comment(String content, Post post, Vet vet, Comment comment){
         this.content = content;
         this.post = post;
         this.vet = vet;
+        this.parent = comment;
     }
 
     public void update(CommentUpdateRequestDto requestDto){
