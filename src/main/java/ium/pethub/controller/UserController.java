@@ -1,27 +1,6 @@
 package ium.pethub.controller;
 
 
-import static ium.pethub.util.AuthConstants.EMAIL;
-import static ium.pethub.util.AuthConstants.NICKNAME;
-import static ium.pethub.util.AuthConstants.PASSWORD;
-import static ium.pethub.util.AuthConstants.REFRESH_TOKEN;
-import static ium.pethub.util.AuthConstants.NEW_PASSWORD;
-
-import java.io.IOException;
-import java.util.Map;
-
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import ium.pethub.dto.common.ResponseDto;
 import ium.pethub.dto.user.request.UserJoinRequestDto;
 import ium.pethub.dto.user.request.UserLoginRequestDto;
@@ -32,6 +11,15 @@ import ium.pethub.util.AuthCheck;
 import ium.pethub.util.UserContext;
 import ium.pethub.util.ValidToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
+
+import static ium.pethub.util.AuthConstants.*;
 
 @RequiredArgsConstructor
 @RestController

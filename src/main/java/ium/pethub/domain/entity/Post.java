@@ -1,12 +1,13 @@
 package ium.pethub.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ium.pethub.dto.post.request.PostUpdateRequestDto;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.ArrayList;
 import java.util.List;
 

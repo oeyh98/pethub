@@ -1,14 +1,15 @@
 package ium.pethub.domain.entity;
 
 import ium.pethub.dto.owner.request.OwnerUpdateRequestDto;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter

@@ -1,7 +1,6 @@
 package ium.pethub.dto.pet.response;
 
 import ium.pethub.domain.entity.Pet;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

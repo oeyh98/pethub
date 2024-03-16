@@ -2,10 +2,8 @@ package ium.pethub.service;
 
 import ium.pethub.domain.entity.Owner;
 import ium.pethub.domain.entity.Post;
-import ium.pethub.domain.entity.User;
 import ium.pethub.domain.repository.OwnerRepository;
 import ium.pethub.domain.repository.PostRepository;
-import ium.pethub.domain.repository.UserRepository;
 import ium.pethub.dto.post.request.PostSaveRequestDto;
 import ium.pethub.dto.post.request.PostUpdateRequestDto;
 import ium.pethub.dto.post.response.PostListResponseDto;

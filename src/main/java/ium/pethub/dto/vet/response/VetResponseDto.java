@@ -3,7 +3,6 @@ package ium.pethub.dto.vet.response;
 import ium.pethub.domain.entity.User;
 import ium.pethub.domain.entity.Vet;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 

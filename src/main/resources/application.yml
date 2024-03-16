@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 secret:
   key: oingisprettyintheworld1234567890
 
@@ -10,15 +10,14 @@ spring:
     username: root
     password:
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect #여기가문제1 나랑버전달라서 한번확인
+    database-platform: org.hibernate.dialect.MySQLDialect
     properties:
       hibernate:
         generate-ddl: true
         format_sql: true
         show_sql: true
     hibernate:
-      ddl-auto: create
-
+      ddl-auto: update
 
   servlet:
     multipart:

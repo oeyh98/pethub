@@ -1,8 +1,8 @@
 package ium.pethub.controller;
 
 import ium.pethub.dto.common.ResponseDto;
-import ium.pethub.dto.owner.response.OwnerInfoResponseDto;
 import ium.pethub.dto.owner.request.OwnerUpdateRequestDto;
+import ium.pethub.dto.owner.response.OwnerInfoResponseDto;
 import ium.pethub.service.OwnerService;
 import ium.pethub.util.AuthCheck;
 import ium.pethub.util.UserContext;
@@ -10,10 +10,10 @@ import ium.pethub.util.ValidToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController

@@ -3,7 +3,6 @@ package ium.pethub.dto.review;
 import ium.pethub.domain.entity.Owner;
 import ium.pethub.domain.entity.Review;
 import ium.pethub.domain.entity.Vet;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "chat_rooms")
+@Table(name = "chat_room")
 public class ChatRoom {
 
     @Id
@@ -25,7 +25,7 @@ public class ChatRoom {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invited_id",  updatable = false)
     private User invited; // 비식별관계로 왜래키를 둘 다 물고있는게 맞나?
-    // 복합 기본 키(@IdClass 또는 @EmbeddedId)를 사용하여 비식별 관계를 식별 관계로 전환하는 것을 고려
+
     // 회원이 탈퇴하면 채팅방은 그냥 사라지는가?
 
     @Builder

@@ -2,7 +2,6 @@ package ium.pethub.service;
 
 import ium.pethub.domain.entity.Owner;
 import ium.pethub.domain.entity.Pet;
-import ium.pethub.domain.entity.User;
 import ium.pethub.domain.repository.OwnerRepository;
 import ium.pethub.domain.repository.PetRepository;
 import ium.pethub.dto.pet.request.PetRequestDto;

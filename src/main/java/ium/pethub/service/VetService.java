@@ -1,9 +1,7 @@
 package ium.pethub.service;
-import ium.pethub.domain.entity.Post;
 import ium.pethub.domain.entity.User;
 import ium.pethub.domain.entity.Vet;
 import ium.pethub.domain.repository.VetRepository;
-import ium.pethub.dto.post.response.PostListResponseDto;
 import ium.pethub.dto.vet.request.VetUpdateRequestDto;
 import ium.pethub.dto.vet.response.VetInfoResponseDto;
 import ium.pethub.dto.vet.response.VetResponseDto;

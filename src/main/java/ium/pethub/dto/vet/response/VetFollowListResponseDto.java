@@ -1,6 +1,5 @@
 package ium.pethub.dto.vet.response;
 
-import ium.pethub.domain.entity.Owner;
 import ium.pethub.dto.owner.response.OwnerResponseDto;
 import lombok.Builder;
 import lombok.Getter;

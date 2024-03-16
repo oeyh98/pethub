@@ -5,7 +5,6 @@ import ium.pethub.dto.owner.response.OwnerFollowListResponseDto;
 import ium.pethub.dto.owner.response.OwnerFollowResponseDto;
 import ium.pethub.dto.vet.response.VetFollowListResponseDto;
 import ium.pethub.service.FollowService;
-import ium.pethub.util.AuthCheck;
 import ium.pethub.util.UserContext;
 import ium.pethub.util.ValidToken;
 import lombok.AllArgsConstructor;

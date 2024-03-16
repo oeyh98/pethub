@@ -1,13 +1,4 @@
 package ium.pethub.controller;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import ium.pethub.domain.entity.ChatRoom;
 import ium.pethub.dto.common.ResponseDto;
@@ -15,6 +6,15 @@ import ium.pethub.service.ChatService;
 import ium.pethub.util.UserContext;
 import ium.pethub.util.ValidToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController

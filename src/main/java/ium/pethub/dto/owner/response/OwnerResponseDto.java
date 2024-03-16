@@ -4,8 +4,6 @@ import ium.pethub.domain.entity.Owner;
 import ium.pethub.domain.entity.User;
 import lombok.Getter;
 
-import java.time.LocalDate;
-
 @Getter
 public class OwnerResponseDto {
     private Long userId;
