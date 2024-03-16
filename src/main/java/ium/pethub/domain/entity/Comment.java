@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @NoArgsConstructor(access=AccessLevel.PROTECTED)
 @Getter
@@ -20,10 +22,12 @@ public class Comment extends BaseTimeEntity{
 
     String content;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     Post post;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vet_id", nullable = false)
     Vet vet;
