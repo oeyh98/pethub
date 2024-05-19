@@ -50,7 +50,7 @@
 - Spring Data Jpa
 - QueryDSL
 - Gradle
-- h2 database
+- MySQL
 
 ERD
 ---
