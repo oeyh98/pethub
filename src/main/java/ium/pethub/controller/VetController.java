@@ -6,8 +6,7 @@ import ium.pethub.dto.vet.response.VetInfoResponseDto;
 import ium.pethub.dto.vet.response.VetResponseDto;
 import ium.pethub.service.VetService;
 import ium.pethub.util.AuthCheck;
-import ium.pethub.util.UserContext;
-import ium.pethub.util.ValidToken;
+import ium.pethub.util.AuthenticationPrincipal;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -35,20 +34,17 @@ public class VetController {
         return ResponseEntity.ok().body(new ResponseDto("", responseDto));
     }
 
-    @ValidToken
     @GetMapping("/api/vet/nickname")
-    public ResponseEntity<?> getOwnerInfoByNickname(@RequestParam("nickname") String nickname) {
+    public ResponseEntity<?> getOwnerInfoByNickname(@AuthenticationPrincipal Long userId, @RequestParam("nickname") String nickname) {
         return ResponseEntity.ok()
                 .body(ResponseDto.of(HttpStatus.OK, vetService.getVetByNickname(nickname)));
     }
 
 
-    @ValidToken
     @AuthCheck(role = AuthCheck.Role.VET)
     @PutMapping("api/vet")
-    public ResponseEntity updateVet(@RequestBody VetUpdateRequestDto requestDto){
-        Long vetId = UserContext.userData.get().getUserId();
-        vetService.vetUpdate(vetId, requestDto);
+    public ResponseEntity updateVet(@AuthenticationPrincipal Long userId, @RequestBody VetUpdateRequestDto requestDto){
+        vetService.vetUpdate(userId, requestDto);
         return ResponseEntity.ok().body(ResponseDto.of("수의사 정보 수정에 성공하였습니다"));
     }
 }

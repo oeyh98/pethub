@@ -10,6 +10,7 @@ import static ium.pethub.util.AuthConstants.NEW_PASSWORD;
 import java.io.IOException;
 import java.util.Map;
 
+import ium.pethub.util.AuthenticationPrincipal;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -29,8 +30,6 @@ import ium.pethub.dto.user.response.UserResponseDto;
 import ium.pethub.dto.user.response.UserTokenResponseDto;
 import ium.pethub.service.UserService;
 import ium.pethub.util.AuthCheck;
-import ium.pethub.util.UserContext;
-import ium.pethub.util.ValidToken;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -90,11 +89,10 @@ public class UserController {
 
     // 조훈창 - 수정
     // 쿠키 속성 추가 : sameSite, secure httpOnly
-    @ValidToken
     @AuthCheck(role = AuthCheck.Role.OWNER)
     @PostMapping("/api/user/logout")
-    public ResponseEntity<Object> logout() {
-        userService.removeRefreshToken(UserContext.userData.get().getUserId());
+    public ResponseEntity<Object> logout(@AuthenticationPrincipal Long userId) {
+        userService.removeRefreshToken(userId);
         return ResponseEntity.ok()
                 .header("Set-Cookie", "ACCESS_TOKEN=; path=/; max-age=0; expires=0; sameSite=None; secure=true; httpOnly=true;")
                 .header("Set-Cookie", "REFRESH_TOKEN=; path=/updateToken; max-age=0; expires=0; sameSite=None; secure=true; httpOnly=true;")
@@ -103,10 +101,9 @@ public class UserController {
                 );
     }
 
-    @ValidToken
     @PostMapping("/api/user/check-pw")
-    public ResponseEntity<?> checkPassword(@RequestBody Map<String, String> password) throws Exception {
-        userService.checkPassword(UserContext.userData.get().getUserId(), password.get(PASSWORD));
+    public ResponseEntity<?> checkPassword(@AuthenticationPrincipal Long userId, @RequestBody Map<String, String> password) throws Exception {
+        userService.checkPassword(userId, password.get(PASSWORD));
         return ResponseEntity.ok().body(ResponseDto.of(
                 "비밀번호가 일치합니다."
         ));
@@ -114,10 +111,9 @@ public class UserController {
 
     //조훈창 - 수정
     // 메소드 파라미터 수정
-    @ValidToken
     @PutMapping("/api/user/change-pw")
-    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> password) throws Exception {
-        userService.updatePassword(UserContext.userData.get().getUserId(),password.get(PASSWORD), password.get(NEW_PASSWORD));
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal Long userId, @RequestBody Map<String, String> password) throws Exception {
+        userService.updatePassword(userId, password.get(PASSWORD), password.get(NEW_PASSWORD));
         return ResponseEntity.ok().body(ResponseDto.of(
                 "비밀번호 변경에 성공하였습니다."
         ));
@@ -125,20 +121,18 @@ public class UserController {
 
     //조훈창 - 수정
     // 닉네임 변경 추가
-    @ValidToken
     @PutMapping("/api/user/change-nickname")
-    public ResponseEntity<?> changeNickname(@RequestBody Map<String, String> nickname) throws Exception {
-        userService.updateNickname(UserContext.userData.get().getUserId(),nickname.get(NICKNAME));
+    public ResponseEntity<?> changeNickname(@AuthenticationPrincipal Long userId, @RequestBody Map<String, String> nickname) throws Exception {
+        userService.updateNickname(userId, nickname.get(NICKNAME));
         return ResponseEntity.ok().body(ResponseDto.of(
                 "닉네임 변경에 성공하였습니다."
         ));
     }
 
-    @ValidToken
     @GetMapping("/api/user/update-token")
-    public ResponseEntity<Object> updateAccessToken(@CookieValue(REFRESH_TOKEN) String refreshToken) throws Exception {
+    public ResponseEntity<Object> updateAccessToken(@AuthenticationPrincipal Long userId, @CookieValue(REFRESH_TOKEN) String refreshToken) throws Exception {
 
-        UserTokenResponseDto token = userService.updateAccessToken(UserContext.userData.get().getUserId(), refreshToken);
+        UserTokenResponseDto token = userService.updateAccessToken(userId, refreshToken);
         ResponseCookie AccessToken = userService.getAccessTokenCookie(
                 token.getACCESS_TOKEN());
 
@@ -146,20 +140,18 @@ public class UserController {
                 .header("Set-Cookie", AccessToken.toString()).build();
     }
 
-    @ValidToken
     @PostMapping("/api/user/withdraw")
-    public ResponseEntity withdraw(){
-        userService.withdraw(UserContext.userData.get().getUserId());
+    public ResponseEntity withdraw(@AuthenticationPrincipal Long userId){
+        userService.withdraw(userId);
         return ResponseEntity.ok().body(new ResponseDto("회원이 탈퇴되었습니다."));
     }
 
-    @ValidToken
     @GetMapping("/api/user/info")
-    public ResponseEntity<?> getUserInfo(){
-        return ResponseEntity.ok().body(userService.getUserInfo(UserContext.userData.get().getUserId()));
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal Long userId){
+        return ResponseEntity.ok().body(userService.getUserInfo(userId));
     }
 
-    @ValidToken
+
     @GetMapping("/api/user/info/{userId}")
     public ResponseEntity<?> getUserInfoById(@PathVariable("userId") Long userId){
         return ResponseEntity.ok().body(userService.getUserInfo(userId));
@@ -168,9 +160,8 @@ public class UserController {
 
     // 조훈창 - 수정
     // OWNER 에 있는 이미지 업로드 이동
-    @ValidToken
     @PostMapping("/api/user/image")
-    public ResponseEntity<?> uploadUserImage(@RequestParam("photo") MultipartFile imageFile) throws IOException {
-       return ResponseEntity.ok().body(userService.uploadUserImage(imageFile,UserContext.userData.get().getUserId()));
+    public ResponseEntity<?> uploadUserImage(@AuthenticationPrincipal Long userId, @RequestParam("photo") MultipartFile imageFile) throws IOException {
+       return ResponseEntity.ok().body(userService.uploadUserImage(imageFile, userId));
     }
 }

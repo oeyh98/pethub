@@ -8,8 +8,7 @@ import ium.pethub.dto.post.response.PostListResponseDto;
 import ium.pethub.dto.post.response.PostResponseDto;
 import ium.pethub.service.PostService;
 import ium.pethub.util.AuthCheck;
-import ium.pethub.util.UserContext;
-import ium.pethub.util.ValidToken;
+import ium.pethub.util.AuthenticationPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -27,11 +26,9 @@ public class PostController {
 
     //TODO: post 분리
     //TODO: 게시물 목록에서 댓글 수 반환
-    @ValidToken
     @AuthCheck(role = AuthCheck.Role.OWNER)
     @PostMapping
-    public ResponseEntity savePost(@RequestBody PostSaveRequestDto requestDto) {
-        Long userId = UserContext.userData.get().getUserId();
+    public ResponseEntity savePost(@AuthenticationPrincipal Long userId, @RequestBody PostSaveRequestDto requestDto) {
         Long postId = postService.savePost(userId, requestDto);
         return ResponseEntity.ok().body(ResponseDto.of("게시물 작성이 완료되었습니다.", Map.of("postId", postId)));
     }
@@ -49,7 +46,6 @@ public class PostController {
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @ValidToken
     @GetMapping("/posts/{userId}/{page}")
     public ResponseEntity<?> findPostsByUserId(@PathVariable Long userId, @PathVariable int page){
         Page<PostListResponseDto> postList = postService.findPostsByUserId(userId, page);
@@ -65,20 +61,15 @@ public class PostController {
     //     return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, postList));
     // }
 
-    //TODO: 아이디 검증
-    @ValidToken
     @PutMapping("/{postId}")
-    public ResponseEntity<Object> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequestDto requestDto) {
-        postService.updatePost(postId, requestDto);
+    public ResponseEntity<Object> updatePost(@AuthenticationPrincipal Long userId, @PathVariable Long postId, @RequestBody PostUpdateRequestDto requestDto) {
+        postService.updatePost(userId, postId, requestDto);
         return ResponseEntity.ok().body(ResponseDto.of("게시물 수정이 완료되었습니다."));
     }
 
-    //TODO: 아이디 검증
-    //댓글있으면 안됨
-    @ValidToken
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Object> deletePost(@PathVariable Long postId){
-        postService.deletePost(postId);
+    public ResponseEntity<Object> deletePost(@AuthenticationPrincipal Long userId, @PathVariable Long postId){
+        postService.deletePost(userId, postId);
         return ResponseEntity.ok().body(ResponseDto.of("게시물 삭제가 완료되었습니다."));
     }
 }

@@ -5,8 +5,8 @@ import ium.pethub.dto.comment.request.CommentUpdateRequestDto;
 import ium.pethub.dto.common.ResponseDto;
 import ium.pethub.service.CommentService;
 import ium.pethub.util.AuthCheck;
-import ium.pethub.util.UserContext;
-import ium.pethub.util.ValidToken;
+import ium.pethub.util.AuthenticationPrincipal;
+
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,29 +20,24 @@ public class CommentController {
     private final CommentService commentService;
 
     // requstBody
-    @ValidToken
     @AuthCheck(role = AuthCheck.Role.VET)
     @PostMapping("api/post/{postId}/comment")
-    public ResponseEntity saveComment(@PathVariable Long postId, @RequestBody CommentSaveRequestDto requestDto) {
-        Long userId = UserContext.userData.get().getUserId();
+    public ResponseEntity saveComment(@AuthenticationPrincipal Long userId, @PathVariable Long postId, @RequestBody CommentSaveRequestDto requestDto) {
         Long commentId = commentService.saveComment(userId, postId, requestDto);
         return ResponseEntity.ok().body(ResponseDto.of("댓글 작성이 완료되었습니다.", Map.of("commentId", commentId)));
     }
 
-    @ValidToken
     @AuthCheck(role = AuthCheck.Role.VET)
     @PutMapping("api/post/{postId}/comment/{commentId}")
-    public ResponseEntity updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentUpdateRequestDto requestDto) {
-        Long userId = UserContext.userData.get().getUserId();
+    public ResponseEntity updateComment(@AuthenticationPrincipal Long userId, @PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentUpdateRequestDto requestDto) {
         commentService.updateComment(commentId, requestDto);
         return ResponseEntity.ok().body(ResponseDto.of("댓글 수정이 완료되었습니다."));
     }
 
-    @ValidToken
+
     @AuthCheck(role = AuthCheck.Role.VET)
     @DeleteMapping("api/post/{postId}/comment/{commentId}")
-    public ResponseEntity deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
-        Long userId = UserContext.userData.get().getUserId();
+    public ResponseEntity deleteComment(@AuthenticationPrincipal Long userId, @PathVariable Long postId, @PathVariable Long commentId) {
         commentService.deleteComment(commentId);
         return ResponseEntity.ok().body(ResponseDto.of("댓글 삭제가 완료되었습니다."));
     }

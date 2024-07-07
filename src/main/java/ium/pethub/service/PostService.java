@@ -66,7 +66,7 @@ public class PostService {
     // }
 
     @Transactional(readOnly = true)
-    Page<PostListResponseDto> getPostListResponseDto(Long ownerId, int page) {
+    public Page<PostListResponseDto> getPostListResponseDto(Long ownerId, int page) {
         Pageable pageable = PageRequest.of(page, 8, Sort.by("createdAt").descending());
         Page<Post> posts = postRepository.findAllByOwnerId(ownerId, pageable);
         List<PostListResponseDto> postList = posts.stream()
@@ -83,20 +83,30 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, PostUpdateRequestDto requestDto) {
+    public void updatePost(Long userId, Long postId, PostUpdateRequestDto requestDto) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(
                         ()-> new EntityNotFoundException("게시물이 존재하지 않습니다. id=" + postId));
+        Owner owner = ownerRepository.findByUserId(userId).get();
+        checkPostAuthor(post, owner.getId());
 
         post.update(requestDto);
     }
 
     @Transactional
-    public void deletePost(Long postId) {
+    public void deletePost(long userId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(
                         () -> new EntityNotFoundException("게시물이 존재하지 않습니다. id=" + postId)
                 );
+        Owner owner = ownerRepository.findByUserId(userId).get();
+        checkPostAuthor(post, owner.getId());
         postRepository.delete(post);
+    }
+
+    void checkPostAuthor(Post post, Long ownerId) {
+        if(post.getOwner().getId() != ownerId) {
+            throw new IllegalStateException("게시물 작성자만 수정, 삭제가 가능합니다.");
+        }
     }
 }

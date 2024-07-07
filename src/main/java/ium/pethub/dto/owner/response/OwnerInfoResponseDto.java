@@ -18,7 +18,7 @@ public class OwnerInfoResponseDto {
     private List<Post> postList;
     private List<Follow> followings;
     private List<Pet> petList;
-    private List<Review> reviewList;
+//    private List<Review> reviewList;
 
     public OwnerInfoResponseDto(Owner owner){
         User user = owner.getUser();
@@ -34,6 +34,6 @@ public class OwnerInfoResponseDto {
         this.postList = owner.getPostList();
         this.followings = owner.getFollowings();
         this.petList = owner.getPetList();
-        this.reviewList = owner.getReviewList();
+//        this.reviewList = owner.getReviewList();
     }
 }

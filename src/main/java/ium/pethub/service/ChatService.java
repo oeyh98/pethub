@@ -12,7 +12,7 @@ import ium.pethub.dto.chat.response.ChatMessageListResponseDto;
 import ium.pethub.dto.chat.response.ChatResponseDto;
 import ium.pethub.dto.chat.response.ChatRoomResponseDto;
 import ium.pethub.dto.chat.response.CreateRoomResponseDto;
-import ium.pethub.util.UserContext;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,8 +58,7 @@ public class ChatService {
         return new ChatResponseDto(chatResponse);
     }
 
-    public ChatMessageListResponseDto getChatList(Long roomId) {
-        Long userId = UserContext.userData.get().getUserId();
+    public ChatMessageListResponseDto getChatList(Long userId, Long roomId) {
         chatRepository.updateStateByRoomIdAndUserId(roomId, userId);
 
         // 조훈창 수정 -> Stream Error 발생으로 collect 추가

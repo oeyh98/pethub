@@ -26,7 +26,7 @@ public class VetInfoResponseDto {
 
     private List<Comment> commentList;
     private List<Follow> followers;
-    private List<Review> reviewList;
+//    private List<Review> reviewList;
     public VetInfoResponseDto(Vet vet){
         User user = vet.getUser();
         this.userId = user.getId();
@@ -47,6 +47,6 @@ public class VetInfoResponseDto {
 
         this.commentList = vet.getCommentList();
         this.followers = vet.getFollowers();
-        this.reviewList = vet.getReviewList();
+//        this.reviewList = vet.getReviewList();
     }
 }
