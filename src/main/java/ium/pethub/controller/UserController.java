@@ -11,9 +11,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import ium.pethub.util.AuthenticationPrincipal;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,28 +72,16 @@ public class UserController {
     public ResponseEntity<Object> login(@RequestBody UserLoginRequestDto request) throws Exception {
         UserResponseDto responseDto = userService.login(request);
 
-        ResponseCookie AccessToken = userService.getAccessTokenCookie(
-                responseDto.getAuthTokenResponseDto().getACCESS_TOKEN());
-
-        ResponseCookie RefreshToken = userService.getRefreshTokenCookie(
-                responseDto.getAuthTokenResponseDto().getREFRESH_TOKEN());
 
         return ResponseEntity.ok()
-                .header("Set-Cookie", AccessToken.toString())
-                .header("Set-Cookie", RefreshToken.toString())
                 .body(ResponseDto.of("로그인을 성공하였습니다",
                         responseDto));
     }
 
-    // 조훈창 - 수정
-    // 쿠키 속성 추가 : sameSite, secure httpOnly
-    @AuthCheck(role = AuthCheck.Role.OWNER)
     @PostMapping("/api/user/logout")
     public ResponseEntity<Object> logout(@AuthenticationPrincipal Long userId) {
         userService.removeRefreshToken(userId);
         return ResponseEntity.ok()
-                .header("Set-Cookie", "ACCESS_TOKEN=; path=/; max-age=0; expires=0; sameSite=None; secure=true; httpOnly=true;")
-                .header("Set-Cookie", "REFRESH_TOKEN=; path=/updateToken; max-age=0; expires=0; sameSite=None; secure=true; httpOnly=true;")
                 .body(ResponseDto.of(
                         "로그아웃 성공")
                 );
@@ -130,14 +116,14 @@ public class UserController {
     }
 
     @GetMapping("/api/user/update-token")
-    public ResponseEntity<Object> updateAccessToken(@AuthenticationPrincipal Long userId, @CookieValue(REFRESH_TOKEN) String refreshToken) throws Exception {
+    public ResponseEntity<Object> updateAccessToken(@AuthenticationPrincipal Long userId, @RequestBody Map<String, String> refreshToken) throws Exception {
 
-        UserTokenResponseDto token = userService.updateAccessToken(userId, refreshToken);
-        ResponseCookie AccessToken = userService.getAccessTokenCookie(
-                token.getACCESS_TOKEN());
+        UserTokenResponseDto token = userService.updateAccessToken(userId, refreshToken.get(REFRESH_TOKEN));
 
-        return ResponseEntity.ok()
-                .header("Set-Cookie", AccessToken.toString()).build();
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "토큰 갱신에 성공하였습니다.",
+                token
+        ));
     }
 
     @PostMapping("/api/user/withdraw")

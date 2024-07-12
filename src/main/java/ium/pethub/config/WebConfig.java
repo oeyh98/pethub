@@ -42,8 +42,6 @@ public class WebConfig implements WebMvcConfigurer {
         argumentResolvers.add(authenticationArgumentResolver);
     }
 
-
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         Path path = Paths.get("pethub/src/main/upload/img/");

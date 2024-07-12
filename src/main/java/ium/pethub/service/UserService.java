@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import ium.pethub.util.PasswordEncoder;
-import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -185,29 +184,6 @@ public class UserService {
         user.updateNickname(nickname);
     }
 
-    @Transactional
-    public ResponseCookie getAccessTokenCookie(String accessToken) {
-        return ResponseCookie.from(
-                "ACCESS_TOKEN", accessToken)
-                .path("/")
-                .httpOnly(true)
-                .maxAge(REFRESH_EXPIRE)
-                .sameSite("None")
-                .secure(true)
-                .build();
-    }
-
-    @Transactional
-    public ResponseCookie getRefreshTokenCookie(String refreshToken) {
-        return ResponseCookie.from(
-                "REFRESH_TOKEN", refreshToken)
-                .path("/api/update-token")
-                .httpOnly(true)
-                .maxAge(REFRESH_EXPIRE)
-                .sameSite("None")
-                .secure(true)
-                .build();
-    }
 
     public void withdraw(Long userId) {
         User user = userRepository.findById(userId).get();
