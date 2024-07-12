@@ -5,9 +5,7 @@ import ium.pethub.dto.owner.response.OwnerFollowListResponseDto;
 import ium.pethub.dto.owner.response.OwnerFollowResponseDto;
 import ium.pethub.dto.vet.response.VetFollowListResponseDto;
 import ium.pethub.service.FollowService;
-import ium.pethub.util.AuthCheck;
-import ium.pethub.util.UserContext;
-import ium.pethub.util.ValidToken;
+import ium.pethub.util.AuthenticationPrincipal;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,35 +22,29 @@ public class FollowController {
 
     private final FollowService followService;
 
-    @ValidToken
     @PostMapping("/api/vet/{vetId}/follow")
-    public ResponseEntity following(@PathVariable String vetId){
-        Long userId = UserContext.userData.get().getUserId();
+    public ResponseEntity following(@AuthenticationPrincipal Long userId, @PathVariable String vetId){
         OwnerFollowResponseDto responseDto = followService.saveFollow(userId, Long.parseLong(vetId));
 
         return ResponseEntity.ok().body(new ResponseDto("success", responseDto));
     }
 
-    @ValidToken
     @DeleteMapping("/api/vet/{vetId}/unfollow")
-    public ResponseEntity unfollowing(@PathVariable String vetId){
-        Long userId = UserContext.userData.get().getUserId();
+    public ResponseEntity unfollowing(@AuthenticationPrincipal Long userId, @PathVariable String vetId){
         OwnerFollowResponseDto responseDto = followService.deleteFollow(userId, Long.parseLong(vetId));
 
         return ResponseEntity.ok().body(new ResponseDto("success", responseDto));
     }
 
-    @ValidToken
     @GetMapping("/api/vet/{vetId}/follower")
-    public ResponseEntity getFollowingList(@PathVariable Long vetId){
+    public ResponseEntity getFollowingList(@AuthenticationPrincipal Long userId, @PathVariable Long vetId){
         List<VetFollowListResponseDto> responseDto = followService.getFollowerListByVetId(vetId);
 
         return ResponseEntity.ok().body(new ResponseDto("success", responseDto));
     }
 
-    @ValidToken
     @GetMapping("/api/owner/{ownerId}/following")
-    public ResponseEntity getFollowerList(@PathVariable Long ownerId){
+    public ResponseEntity getFollowerList(@AuthenticationPrincipal Long userId, @PathVariable Long ownerId){
         List<OwnerFollowListResponseDto> responseDto = followService.getFollowingListByOwnerId(ownerId);
 
         return ResponseEntity.ok().body(new ResponseDto("success", responseDto));

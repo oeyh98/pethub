@@ -35,8 +35,8 @@ public class Vet extends BaseTimeEntity {
     private List<Follow> followers = new ArrayList<>();
     @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>();
-    @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
-    private List<Review> reviewList = new ArrayList<>();
+//    @OneToMany(mappedBy = "vet",fetch = FetchType.LAZY)
+//    private List<Review> reviewList = new ArrayList<>();
 
     @Builder
     public Vet(User user) {

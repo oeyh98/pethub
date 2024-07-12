@@ -10,13 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.http.ResponseCookie;
+import ium.pethub.util.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.jsonwebtoken.JwtException;
-import ium.pethub.domain.entity.Owner;
 import ium.pethub.domain.entity.RoleType;
 import ium.pethub.domain.entity.User;
 import ium.pethub.domain.repository.UserRepository;
@@ -25,7 +24,6 @@ import ium.pethub.dto.user.request.UserLoginRequestDto;
 import ium.pethub.dto.user.response.UserResponseDto;
 import ium.pethub.dto.user.response.UserTokenResponseDto;
 import ium.pethub.exception.AlreadyExistException;
-import ium.pethub.util.AESEncryption;
 import ium.pethub.util.TokenProvider;
 import lombok.AllArgsConstructor;
 
@@ -36,7 +34,7 @@ public class UserService {
     private final OwnerService ownerService;
     private final VetService vetService;
     private final TokenProvider TokenProvider;
-    private final AESEncryption aesEncryption;
+    private final PasswordEncoder passwordEncoder;
 
     // 조훈창- 수정
     // 닉네임 중복 검사를 위한 method
@@ -70,8 +68,8 @@ public class UserService {
     public void join(UserJoinRequestDto requestDto) throws Exception {
         RoleType role = requestDto.getRole();
         User user = requestDto.toEntity(role);
-        String encryptPwd = aesEncryption.encrypt(user.getPassword());
-        user.resetPassword(encryptPwd);
+        String encodePwd = encodePassword(user.getPassword());
+        user.resetPassword(encodePwd);
         userRepository.save(user);
 
         if (role == RoleType.OWNER) {
@@ -109,17 +107,17 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public void checkPassword(Long userId, String password) throws Exception {
+    public void checkPassword(Long userId, String rawPassword) throws Exception {
         User user = userRepository.findById(userId).get();
-        String encryptPw = aesEncryption.encrypt(password);
+        String encodePwd = encodePassword(rawPassword);
 
-        if (!user.getPassword().equals(encryptPw)) {
+        if (!passwordEncoder.matches(user.getPassword(), encodePwd)) {
             throw new IllegalStateException("비밀번호가 틀렸습니다.");
         }
     }
 
     @Transactional
-    UserTokenResponseDto tokenProvider(User user) {
+    public UserTokenResponseDto tokenProvider(User user) {
         String accessToken = TokenProvider.createAccessToken(user.getId(), user.getRole());
         String refreshToken = TokenProvider.createRefreshToken(user.getId());
 
@@ -153,14 +151,14 @@ public class UserService {
     }
 
     @Transactional
-    void removeRefreshToken(User user) {
+    public void removeRefreshToken(User user) {
         user.destroyRefreshToken();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public void removeRefreshToken(Long userId) {
         User user = userRepository.findById(userId).get();
-        removeRefreshToken(user);
+        user.destroyRefreshToken();
     }
 
     // 조훈창 - 수정
@@ -169,9 +167,14 @@ public class UserService {
     public void updatePassword(Long userId, String password,String newPassword) throws Exception {
         checkPassword(userId, password);
         User user = userRepository.findById(userId).get();
-        String encryptedPassword = aesEncryption.encrypt(newPassword);
+        String encryptedPassword = encodePassword(newPassword);
         user.resetPassword(encryptedPassword);
     }
+
+    public String encodePassword(String password) throws Exception {
+        return passwordEncoder.encode(password);
+    }
+
     // 조훈창 - 수정
     // 닉네임 변경 메소드 추가
     @Transactional
@@ -181,29 +184,6 @@ public class UserService {
         user.updateNickname(nickname);
     }
 
-    @Transactional
-    public ResponseCookie getAccessTokenCookie(String accessToken) {
-        return ResponseCookie.from(
-                "ACCESS_TOKEN", accessToken)
-                .path("/")
-                .httpOnly(true)
-                .maxAge(REFRESH_EXPIRE)
-                .sameSite("None")
-                .secure(true)
-                .build();
-    }
-
-    @Transactional
-    public ResponseCookie getRefreshTokenCookie(String refreshToken) {
-        return ResponseCookie.from(
-                "REFRESH_TOKEN", refreshToken)
-                .path("/api/update-token")
-                .httpOnly(true)
-                .maxAge(REFRESH_EXPIRE)
-                .sameSite("None")
-                .secure(true)
-                .build();
-    }
 
     public void withdraw(Long userId) {
         User user = userRepository.findById(userId).get();

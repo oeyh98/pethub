@@ -37,8 +37,8 @@ public class Owner extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     private List<Follow> followings = new ArrayList<>();
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
-    private List<Review> reviewList = new ArrayList<>();
+//    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+//    private List<Review> reviewList = new ArrayList<>();
     @Builder
     public Owner(User user) {
         this.user = user;
