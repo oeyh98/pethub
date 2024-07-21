@@ -3,7 +3,7 @@ package ium.pethub.domain.entity;
 import ium.pethub.dto.post.request.PostUpdateRequestDto;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
