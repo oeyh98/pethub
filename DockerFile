@@ -1,7 +1,0 @@
-FROM openjdk:11-jdk
-
-WORKDIR /app
-COPY gradlew build.gradle settings.gradle ./
-COPY gradle ./gradle
-COPY src/ ./src/main
-RUN ./gradlew build

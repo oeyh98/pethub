@@ -1,15 +1,16 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.7' // Spring Boot 최신 버전 사용
-	id 'io.spring.dependency-management' version '1.1.5'
+	id 'org.springframework.boot' version '2.7.10'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
 group = 'ium'
 version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17) // Java 17 사용
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
 	}
 }
 
@@ -22,20 +23,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	// JWT 라이브러리
+	// jwt 라이브러리
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'org.jsoup:jsoup:1.15.4'
-	// com.sun.xml.bind
-	implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
-	implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
-	// javax.xml.bind
-	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 
-	// Lombok
+	// lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// MySQL
+	//db:mysql
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -45,33 +41,22 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-	// QueryDSL 설정
-//	ext {
-//		querydslVersion = '5.0.0' // 적절한 최신 버전으로 설정
-//	}
-//
-//	implementation "com.querydsl:querydsl-jpa:${querydslVersion}"
-//	implementation "com.querydsl:querydsl-core:${querydslVersion}"
-//	implementation "com.querydsl:querydsl-collections:${querydslVersion}"
-//
-//	annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jpa"
-//	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-//	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
-
-	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+	// queryDSL 설정
+	implementation "com.querydsl:querydsl-jpa"
+	implementation "com.querydsl:querydsl-core"
+	implementation "com.querydsl:querydsl-collections"
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-	// Redis
+
+	//redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-	// Development only
+	// 조훈창 - 추가
+//	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-

@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import java.util.Base64;
+import org.springframework.util.Base64Utils;
 
-import jakarta.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
 import java.util.Date;
 
 import static ium.pethub.util.AuthConstants.ACCESS_EXPIRE;
@@ -28,8 +28,9 @@ public class TokenProvider {
 
     @PostConstruct
     protected void init() {
-        SECRET_KEY = Base64.getUrlEncoder().encodeToString(SECRET_KEY.getBytes());
+        SECRET_KEY = Base64Utils.encodeToUrlSafeString(SECRET_KEY.getBytes());
     }
+
     //권한정보를 이용해서 토큰을 생성하는 메소드
     public String createAccessToken(Long userId, RoleType role) {
 

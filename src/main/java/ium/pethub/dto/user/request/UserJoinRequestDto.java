@@ -5,7 +5,9 @@ import ium.pethub.domain.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @NoArgsConstructor
 @Getter

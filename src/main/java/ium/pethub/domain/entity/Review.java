@@ -8,7 +8,7 @@
 //import lombok.NoArgsConstructor;
 //import org.springframework.lang.Nullable;
 //
-//import jakarta.persistence.*;
+//import javax.persistence.*;
 //
 //@Entity
 //@NoArgsConstructor(access = AccessLevel.PROTECTED)

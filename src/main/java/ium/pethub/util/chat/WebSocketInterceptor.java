@@ -14,8 +14,8 @@ package ium.pethub.util.chat;//package Maswillaeng.MSLback.utils.interceptor;
 //import org.springframework.web.socket.WebSocketHandler;
 //import org.springframework.web.socket.server.HandshakeInterceptor;
 //
-//import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.servlet.http.HttpServletResponse;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
 //import java.util.Map;
 //
 //@ComponentScan
