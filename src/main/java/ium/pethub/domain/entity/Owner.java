@@ -3,7 +3,7 @@ package ium.pethub.domain.entity;
 import ium.pethub.dto.owner.request.OwnerUpdateRequestDto;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
