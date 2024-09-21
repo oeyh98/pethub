@@ -15,6 +15,9 @@ public class VetResponseDto {
     private String vetImage;
 
     private Long vetId;
+    private String hosName;
+    private String openHour;
+    private String closeHour;
     private int rating;
     private LocalDateTime createdAt;
 
@@ -26,6 +29,9 @@ public class VetResponseDto {
         this.vetImage = user.getUserImage();
 
         this.vetId = vet.getId();
+        this.hosName = vet.getHosName();
+        this.openHour = vet.getOpenHour();
+        this.closeHour = vet.getCloseHour();
         this.rating = vet.getRating();
         this.createdAt = vet.getCreatedAt();
     }
