@@ -1,7 +1,5 @@
-FROM openjdk:11-jdk
+FROM openjdk:17-alpine
+ARG JAR_FILE=/build/libs/pethub-0.0.1-SNAPSHOT.jar
+COPY build/libs/pethub-0.0.1-SNAPSHOT.jar /pethub.jar
+ENTRYPOINT ["java", "-jar", "/pethub.jar"]
 
-WORKDIR /app
-COPY gradlew build.gradle settings.gradle ./
-COPY gradle ./gradle
-COPY src/ ./src/main
-RUN ./gradlew build
